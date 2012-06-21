@@ -1,4 +1,4 @@
-<div class="span12">
+<div class="span16">
 	<ul class="breadcrumb span6">
 		<li>
 			<a href="<?php echo '<?php'; ?> echo URL::to('<?php echo $this->plural; ?>'); ?>"><?php echo $this->plural_class; ?></a> <span class="divider">/</span>

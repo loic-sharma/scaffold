@@ -64,10 +64,11 @@ class Scaffold_Make_Task {
 			$this->create_model();
 			$this->create_controller();
 
+			$this->create_view('layout');
 			$this->create_view('index');
+			$this->create_view('view');
 			$this->create_view('create');
 			$this->create_view('edit');
-			$this->create_view('layout');
 		}
 	}
 

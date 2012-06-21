@@ -39,6 +39,19 @@ class <?php echo $this->plural_class; ?>_Controller extends Controller {
 		return Redirect::to('<?php echo $this->plural; ?>');
 	}
 
+	public function get_view($id)
+	{
+		$<?php echo $this->singular; ?> = <?php echo $this->singular_class; ?>::find($id);
+
+		if(is_null($<?php echo $this->singular; ?>))
+		{
+			return Redirect::to('<?php echo $this->plural; ?>');
+		}
+
+		$this->layout->title   = 'Viewing <?php echo $this->singular_class; ?> #'.$id;
+		$this->layout->content = View::make('<?php echo $this->plural; ?>.view')->with('<?php echo $this->singular; ?>', $<?php echo $this->singular; ?>);
+	}
+
 	public function get_edit($id)
 	{
 		$<?php echo $this->singular; ?> = <?php echo $this->singular_class; ?>::find($id);
