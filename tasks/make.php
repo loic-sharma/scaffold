@@ -2,7 +2,7 @@
 
 use Laravel\CLI\Command;
 
-class Scaffold_Generate_Task {
+class Scaffold_Make_Task {
 
 	public $singular;
 	public $singular_class;
