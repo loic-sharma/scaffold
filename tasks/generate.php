@@ -4,6 +4,14 @@ use Laravel\CLI\Command;
 
 class Scaffold_Generate_Task {
 
+	public $singular;
+	public $singular_class;
+	public $plural;
+	public $plural_class;
+
+	public $fields = array();
+	public $timestamps = false;
+
 	public function run($arguments)
 	{
 		$count = count($arguments);
@@ -15,53 +23,59 @@ class Scaffold_Generate_Task {
 
 		else
 		{
-			$table = $arguments[0];
+			$this->singular = array_shift($arguments);
+			$this->plural = Str::plural($this->singular);
 
-			array_shift($arguments);
+			$this->singular_class = Str::classify($this->singular);
+			$this->plural_class = Str::classify($this->plural);
 
-			// Build an array of the fields.
-			$fields = array();
-
-			$timestamps = false;
-
-			foreach($arguments as $argument)
-			{
-				if($argument == 'timestamps')
-				{
-					$timestamps = true;
-				}
-
-				else
-				{
-					list($field, $type) = explode(':', $argument);
-
-					$fields[$field] = $type;
-				}
-			}
-
+			// If there was more than one argument passed, the user wishes
+			// to create a new table and has listed out each of the fields.
 			if($count > 1)
 			{
-				echo 'Created migration: '.path('app').'models'.DS.$table.'.php'.PHP_EOL;
+				// Build an array of the fields.
+				foreach($arguments as $argument)
+				{
+					if($argument == 'timestamps')
+					{
+						$this->timestamps = true;
+					}
 
-				$this->create_migration($table, $fields, $timestamps);
+					else
+					{
+						list($field, $type) = explode(':', $argument);
+
+						$this->fields[$field] = $type;
+					}
+				}
+
+				$this->create_migration();
 			}
 
-			echo 'Created controller: '.path('app').'controllers'.DS.$table.'.php'.PHP_EOL;
+			// If only the table's name was passed, the user expects the
+			// scaffolding to use an already existing table. 
+			else
+			{
+				echo 'Generating scaffolding for an already existing table isn\'t implemented yet.';
 
-			$this->create_controller($table, $fields);
+				return;
+			}
 
-			echo 'Created view: '.path('app').'views'.DS.$table.DS.'index.php'.PHP_EOL;
-			echo 'Created view: '.path('app').'views'.DS.$table.DS.'create.php'.PHP_EOL;
-			echo 'Created view: '.path('app').'views'.DS.$table.DS.'edit.php'.PHP_EOL;
+			$this->create_model();
+			$this->create_controller();
+
+			$this->create_view('index');
+
+			if(isset($fields['id']))
+			{
+				$this->create_view('create');
+				$this->create_view('edit');
+			}
 		}
 	}
 
-	public function create_migration($table, $fields, $timestamps)
+	public function create_migration()
 	{
-		// We won't need the singular form of the table's name,
-		// so it'll be automatically pluralized.
-		$table = Str::plural($table);
-
 		// The migration path is prefixed with the date timestamp, which
 		// is a better way of ordering migrations than a simple integer
 		// incrementation, since developers may start working on the
@@ -75,7 +89,7 @@ class Scaffold_Generate_Task {
 		// when we try to write the migration file.
 		if ( ! is_dir($path)) mkdir($path);
 
-		$file = $path.$prefix.'_create_'.$table.'_table'.EXT;
+		$file = $path.$prefix.'_create_'.$this->plural.'_table'.EXT;
 
 		// Generate the migration.
 		ob_start();
@@ -86,24 +100,42 @@ class Scaffold_Generate_Task {
 
 		File::put($file, $migration);
 
-		$this->run_command('migrate');
+		echo 'Created migration: '.$file.PHP_EOL;
 	}
 
-	public function create_controller($table, $fields)
+	public function create_model()
 	{
-		$singular = $table;
-		$plural   = Str::plural($singular);
-		$model    = Str::classify($singular);
+		ob_start();
 
+		include Bundle::path('scaffold').'views'.DS.'templates'.DS.'model.php';
+
+		$model = ob_get_clean();
+
+		$file = path('app').'models'.DS.$this->singular.'.php';
+
+		File::put($file, $model);
+
+		echo 'Created model: '.$file.PHP_EOL;
+	}
+
+	public function create_controller()
+	{
 		ob_start();
 
 		include Bundle::path('scaffold').'views'.DS.'templates'.DS.'controller.php';
 
 		$controller = ob_get_clean();
 
-		$file = path('app').'controllers'.DS.$plural.'.php';
+		$file = path('app').'controllers'.DS.$this->plural.'.php';
 
 		File::put($file, $controller);
+
+		echo 'Created controller: '.path('app').'controllers'.DS.$this->singular.'.php'.PHP_EOL;
+	}
+
+	public function create_view($view)
+	{
+		echo 'Created view: '.path('app').'views'.DS.$this->singular.DS.$view.'.php'.PHP_EOL;
 	}
 
 	public function run_command($command)

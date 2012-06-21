@@ -10,7 +10,7 @@
 	<tbody>
 		<?php foreach($rows as $row): ?>
 			<?php if($editable): ?>
-				<tr onclick="window.location = '<?php echo URL::to('crud/table/'.$table.'/edit/'.$row->id); ?>'">
+				<tr onclick="window.location = '<?php echo URL::to('scaffold/table/'.$table.'/edit/'.$row->id); ?>'">
 			<?php else: ?>
 				<tr>
 			<?php endif; ?>

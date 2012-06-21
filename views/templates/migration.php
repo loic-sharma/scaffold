@@ -1,6 +1,6 @@
 <?php echo '<?php'.PHP_EOL; ?>
 
-class Create_<?php echo Str::classify($table); ?>_Table {
+class Create_<?php echo $this->singular_class; ?>_Table {
 
 	/**
 	 * Make changes to the database.
@@ -9,12 +9,12 @@ class Create_<?php echo Str::classify($table); ?>_Table {
 	 */
 	public function up()
 	{	
-		Schema::create('<?php echo $table; ?>', function($table)
+		Schema::create('<?php echo $this->singular; ?>', function($table)
 		{
-<?php foreach($fields as $field => $type): ?>
+<?php foreach($this->fields as $field => $type): ?>
 			$table-><?php echo $type; ?>('<?php echo $field; ?>');
 <?php endforeach; ?>
-<?php if($timestamps): ?>
+<?php if($this->timestamps): ?>
 
 			$table->timestamps();
 <?php endif; ?>
@@ -28,7 +28,7 @@ class Create_<?php echo Str::classify($table); ?>_Table {
 	 */
 	public function down()
 	{
-		Schema::drop('<?php echo $table; ?>');
+		Schema::drop('<?php echo $this->singular; ?>');
 	}
 
 }
