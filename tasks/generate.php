@@ -65,12 +65,9 @@ class Scaffold_Generate_Task {
 			$this->create_controller();
 
 			$this->create_view('index');
-
-			if(isset($fields['id']))
-			{
-				$this->create_view('create');
-				$this->create_view('edit');
-			}
+			$this->create_view('create');
+			$this->create_view('edit');
+			$this->create_view('layout');
 		}
 	}
 
@@ -130,12 +127,28 @@ class Scaffold_Generate_Task {
 
 		File::put($file, $controller);
 
-		echo 'Created controller: '.path('app').'controllers'.DS.$this->singular.'.php'.PHP_EOL;
+		echo 'Created controller: '.$file.PHP_EOL;
 	}
 
 	public function create_view($view)
 	{
-		echo 'Created view: '.path('app').'views'.DS.$this->singular.DS.$view.'.php'.PHP_EOL;
+		ob_start();
+
+		include Bundle::path('scaffold').'views'.DS.'templates'.DS.'views'.DS.$view.'.php';
+
+		$content = ob_get_clean();
+
+		$path = path('app').'views'.DS.$this->plural.DS;
+		$file = $path.$view.'.php';
+
+		if( ! is_dir($path))
+		{
+			mkdir($path);
+		}
+
+		File::put($file, $content);
+
+		echo 'Created view: '.$file.PHP_EOL;
 	}
 
 	public function run_command($command)
