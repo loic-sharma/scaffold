@@ -68,8 +68,8 @@ class Scaffold_Make_Task {
 				return;
 			}
 
-			$this->create_model();
 			$this->create_controller();
+			$this->create_model();
 
 			$this->create_view('layout');
 			$this->create_view('index');
@@ -106,7 +106,7 @@ class Scaffold_Make_Task {
 
 		File::put($file, $migration);
 
-		echo 'Created migration: '.$file.PHP_EOL;
+		$this->log('created migration: '.$file);
 	}
 
 	/**
@@ -155,7 +155,7 @@ class Scaffold_Make_Task {
 
 		File::put($file, $model);
 
-		echo 'Created model: '.$file.PHP_EOL;
+		$this->log('Created model: '.$file);
 	}
 
 	/**
@@ -171,7 +171,7 @@ class Scaffold_Make_Task {
 
 		File::put($file, $controller);
 
-		echo 'Created controller: '.$file.PHP_EOL;
+		$this->log('Created controller: '.$file);
 	}
 
 	/**
@@ -194,6 +194,17 @@ class Scaffold_Make_Task {
 
 		File::put($file, $content);
 
-		echo 'Created view: '.$file.PHP_EOL;
+		$this->log('Created view: '.$file);
+	}
+
+	/**
+	 * Show a message on the CLI.
+	 *
+	 * @param  string  $message
+	 * @return void
+	 */
+	public function log($message)
+	{
+		echo "\t".str_replace(path('base'), '', $message).PHP_EOL;
 	}
 }
