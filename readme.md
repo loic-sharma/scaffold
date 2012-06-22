@@ -30,6 +30,14 @@ could just run:
 	php artisan migrate
 
 The migration, model, controller, and views will all be automatically generated.
+
+Notice how each of the fields are listed after the table's name, in singular form.
+The field's name is provided first and then the field's type. All of Laravel's different
+field types from the Schema are supported.
+
+If you wish your scaffold to automatically timestamp, simply add timestamps to the end of
+the command. 
+
 Neat, huh?
 
 ### Using an existing Table to create a Scaffolding
