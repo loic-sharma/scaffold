@@ -1,7 +1,18 @@
 <?php echo '<?php'.PHP_EOL; ?>
 
-class <?php echo $this->singular_class; ?> extends Eloquent {
+class <?php echo $singular_class; ?> extends Eloquent {
 
-	public static $table = '<?php echo $this->plural; ?>';
-	public static $timestamps = <?php echo ($this->timestamps) ? 'true' : 'false'; ?>;
+	/**
+	 * The name of the table associated with the model.
+	 *
+	 * @var string
+	 */
+	public static $table = '<?php echo $plural; ?>';
+
+	/**
+	 * Indicates if the model has update and creation timestamps.
+	 *
+	 * @var bool
+	 */
+	public static $timestamps = <?php echo ($timestamps) ? 'true' : 'false'; ?>;
 }

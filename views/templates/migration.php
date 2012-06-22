@@ -1,6 +1,6 @@
 <?php echo '<?php'.PHP_EOL; ?>
 
-class Create_<?php echo $this->plural_class; ?>_Table {
+class Create_<?php echo $plural_class; ?>_Table {
 
 	/**
 	 * Make changes to the database.
@@ -9,14 +9,14 @@ class Create_<?php echo $this->plural_class; ?>_Table {
 	 */
 	public function up()
 	{	
-		Schema::create('<?php echo $this->plural; ?>', function($table)
+		Schema::create('<?php echo $plural; ?>', function($table)
 		{
 			$table->increments('id');
 
-<?php foreach($this->fields as $field => $type): ?>
+<?php foreach($fields as $field => $type): ?>
 			$table-><?php echo $type; ?>('<?php echo $field; ?>');
 <?php endforeach; ?>
-<?php if($this->timestamps): ?>
+<?php if($timestamps): ?>
 
 			$table->timestamps();
 <?php endif; ?>
@@ -30,7 +30,7 @@ class Create_<?php echo $this->plural_class; ?>_Table {
 	 */
 	public function down()
 	{
-		Schema::drop('<?php echo $this->plural; ?>');
+		Schema::drop('<?php echo $plural; ?>');
 	}
 
 }

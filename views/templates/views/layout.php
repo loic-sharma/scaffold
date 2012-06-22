@@ -27,12 +27,12 @@
 					<div class="alert-message error">
 						<?php echo '<?php '; ?> foreach($errors->all('<p>:message</p>') as $error): ?>
 							<?php echo '<?php'; ?> echo $error; ?>
-						<?php echo '<?php endforeach; ?>'; ?>
+						<?php echo '<?php endforeach; ?>'.PHP_EOL; ?>
 					</div>
-				<?php echo '<?php endif; ?>'; ?>
+				<?php echo '<?php endif; ?>'.PHP_EOL; ?>
 			</div>
 			<div class="span16">
-				<?php echo '<?php'; ?> echo $content; ?>
+				<?php echo '<?php '; ?> echo $content; ?>
 			</div>
 		</div>
 	</div>

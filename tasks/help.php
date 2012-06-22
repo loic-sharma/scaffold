@@ -2,11 +2,17 @@
 
 class Scaffold_Help_Task {
 
+	/**
+	 * Display the help messages for the scaffold.
+	 *
+	 * @param  array  $arguments
+	 * @return void
+	 */
 	public function run($arguments)
 	{
-		echo 'The general command to create a new scaffolding is:'.PHP_EOL.PHP_EOL;
+		echo 'The general command to make a new scaffold is:'.PHP_EOL.PHP_EOL;
 
-		echo 'php artisan scaffold::generate <model name> <fields> <timestamps>'.PHP_EOL.PHP_EOL;
+		echo 'php artisan scaffold::make <model name> <fields> <timestamps>'.PHP_EOL.PHP_EOL;
 
 		echo 'For example:'.PHP_EOL.PHP_EOL;
 

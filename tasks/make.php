@@ -4,14 +4,19 @@ use Laravel\CLI\Command;
 
 class Scaffold_Make_Task {
 
-	public $singular;
-	public $singular_class;
-	public $plural;
-	public $plural_class;
+	/**
+	 * The table's data.
+	 *
+	 * @var array
+	 */
+	public $data = array();
 
-	public $fields = array();
-	public $timestamps = false;
-
+	/**
+	 * Create a new scaffold.
+	 *
+	 * @param  array  $arguments
+	 * @return void
+	 */
 	public function run($arguments)
 	{
 		$count = count($arguments);
@@ -23,11 +28,13 @@ class Scaffold_Make_Task {
 
 		else
 		{
-			$this->singular = array_shift($arguments);
-			$this->plural = Str::plural($this->singular);
+			$this->data['timestamps'] = false;
 
-			$this->singular_class = Str::classify($this->singular);
-			$this->plural_class = Str::classify($this->plural);
+			$this->data['singular'] = array_shift($arguments);
+			$this->data['plural'] = Str::plural($this->data['singular']);
+
+			$this->data['singular_class'] = Str::classify($this->data['singular']);
+			$this->data['plural_class'] = Str::classify($this->data['plural']);
 
 			// If there was more than one argument passed, the user wishes
 			// to create a new table and has listed out each of the fields.
@@ -38,14 +45,14 @@ class Scaffold_Make_Task {
 				{
 					if($argument == 'timestamps')
 					{
-						$this->timestamps = true;
+						$this->data['timestamps'] = true;
 					}
 
 					else
 					{
 						list($field, $type) = explode(':', $argument);
 
-						$this->fields[$field] = $type;
+						$this->data['fields'][$field] = $type;
 					}
 				}
 
@@ -72,6 +79,11 @@ class Scaffold_Make_Task {
 		}
 	}
 
+	/**
+	 * Create a new migration.
+	 *
+	 * @return void
+	 */
 	public function create_migration()
 	{
 		// The migration path is prefixed with the date timestamp, which
@@ -87,77 +99,68 @@ class Scaffold_Make_Task {
 		// when we try to write the migration file.
 		if ( ! is_dir($path)) mkdir($path);
 
-		$file = $path.$prefix.'_create_'.$this->plural.'_table'.EXT;
+		$file = $path.$prefix.'_create_'.$this->data['plural'].'_table'.EXT;
 
 		// Generate the migration.
-		ob_start();
-
-		include Bundle::path('scaffold').'views'.DS.'templates'.DS.'migration.php';
-
-		$migration = ob_get_clean();
+		$migration = View::make('scaffold::templates.migration', $this->data)->render();
 
 		File::put($file, $migration);
 
 		echo 'Created migration: '.$file.PHP_EOL;
 	}
 
+	/**
+	 * Create a new model.
+	 *
+	 * @return void
+	 */
 	public function create_model()
 	{
-		ob_start();
+		$model = View::make('scaffold::templates.model', $this->data)->render();
 
-		include Bundle::path('scaffold').'views'.DS.'templates'.DS.'model.php';
-
-		$model = ob_get_clean();
-
-		$file = path('app').'models'.DS.$this->singular.'.php';
+		$file = path('app').'models'.DS.$this->data['singular'].EXT;
 
 		File::put($file, $model);
 
 		echo 'Created model: '.$file.PHP_EOL;
 	}
 
+	/**
+	 * Create a new controller.
+	 *
+	 * @return void
+	 */
 	public function create_controller()
 	{
-		ob_start();
+		$controller = View::make('scaffold::templates.controller', $this->data)->render();
 
-		include Bundle::path('scaffold').'views'.DS.'templates'.DS.'controller.php';
-
-		$controller = ob_get_clean();
-
-		$file = path('app').'controllers'.DS.$this->plural.'.php';
+		$file = path('app').'controllers'.DS.$this->data['plural'].EXT;
 
 		File::put($file, $controller);
 
 		echo 'Created controller: '.$file.PHP_EOL;
 	}
 
+	/**
+	 * Create a new view.
+	 *
+	 * @param  string  $view
+	 * @return void
+	 */
 	public function create_view($view)
 	{
-		ob_start();
+		$content = View::make('scaffold::templates.views.'.$view, $this->data)->render();
 
-		include Bundle::path('scaffold').'views'.DS.'templates'.DS.'views'.DS.$view.'.php';
+		$path = path('app').'views'.DS.$this->data['plural'].DS;
 
-		$content = ob_get_clean();
+		// If the view directory for this table does not exist, it will
+		// need to be created before any files are created.
+		if ( ! is_dir($path)) mkdir($path);
 
-		$path = path('app').'views'.DS.$this->plural.DS;
-		$file = $path.$view.'.php';
-
-		if( ! is_dir($path))
-		{
-			mkdir($path);
-		}
+		$file = $path.$view.EXT;
 
 		File::put($file, $content);
 
 		echo 'Created view: '.$file.PHP_EOL;
-	}
-
-	public function run_command($command)
-	{
-		ob_start();
-
-		Command::run((array)$command);
-
-		ob_end_clean();
 	}
 }

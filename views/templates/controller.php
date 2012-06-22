@@ -1,22 +1,33 @@
 <?php echo '<?php'.PHP_EOL; ?>
 
-class <?php echo $this->plural_class; ?>_Controller extends Controller {
+class <?php echo $plural_class; ?>_Controller extends Controller {
 
+	/**
+	 * The layout being used by the controller.
+	 *
+	 * @var string
+	 */
+	public $layout = '<?php echo $plural; ?>.layout';
+
+	/**
+	 * Indicates if the controller uses RESTful routing.
+	 *
+	 * @var bool
+	 */
 	public $restful = true;
-	public $layout = '<?php echo $this->plural; ?>.layout';
 
 	public function get_index()
 	{
-		$<?php echo $this->plural; ?> = <?php echo $this->singular_class; ?>::all();
+		$<?php echo $plural; ?> = <?php echo $singular_class; ?>::all();
 
-		$this->layout->title   = '<?php echo $this->plural_class; ?>';
-		$this->layout->content = View::make('<?php echo $this->plural; ?>.index')->with('<?php echo $this->plural; ?>', $<?php echo $this->plural; ?>);
+		$this->layout->title   = '<?php echo $plural_class; ?>';
+		$this->layout->content = View::make('<?php echo $plural; ?>.index')->with('<?php echo $plural; ?>', $<?php echo $plural; ?>);
 	}
 
 	public function get_create()
 	{
-		$this->layout->title   = 'New <?php echo $this->singular_class; ?>';
-		$this->layout->content = View::make('<?php echo $this->plural; ?>.create');
+		$this->layout->title   = 'New <?php echo $singular_class; ?>';
+		$this->layout->content = View::make('<?php echo $plural; ?>.create');
 	}
 
 	public function post_create()
@@ -25,44 +36,44 @@ class <?php echo $this->plural_class; ?>_Controller extends Controller {
 
 		if($validation->valid())
 		{
-			$<?php echo $this->singular; ?> = new <?php echo $this->singular_class; ?>;
+			$<?php echo $singular; ?> = new <?php echo $singular_class; ?>;
 
-<?php foreach($this->fields as $field => $type): ?>
-			$<?php echo $this->singular; ?>-><?php echo $field; ?> = Input::get('<?php echo $field; ?>');
+<?php foreach($fields as $field => $type): ?>
+			$<?php echo $singular; ?>-><?php echo $field; ?> = Input::get('<?php echo $field; ?>');
 <?php endforeach; ?>
 
-			$<?php echo $this->singular; ?>->save();
+			$<?php echo $singular; ?>->save();
 
-			return Redirect::to('<?php echo $this->plural; ?>');
+			return Redirect::to('<?php echo $plural; ?>');
 		}
 
-		return Redirect::to('<?php echo $this->plural; ?>');
+		return Redirect::to('<?php echo $plural; ?>');
 	}
 
 	public function get_view($id)
 	{
-		$<?php echo $this->singular; ?> = <?php echo $this->singular_class; ?>::find($id);
+		$<?php echo $singular; ?> = <?php echo $singular_class; ?>::find($id);
 
-		if(is_null($<?php echo $this->singular; ?>))
+		if(is_null($<?php echo $singular; ?>))
 		{
-			return Redirect::to('<?php echo $this->plural; ?>');
+			return Redirect::to('<?php echo $plural; ?>');
 		}
 
-		$this->layout->title   = 'Viewing <?php echo $this->singular_class; ?> #'.$id;
-		$this->layout->content = View::make('<?php echo $this->plural; ?>.view')->with('<?php echo $this->singular; ?>', $<?php echo $this->singular; ?>);
+		$this->layout->title   = 'Viewing <?php echo $singular_class; ?> #'.$id;
+		$this->layout->content = View::make('<?php echo $plural; ?>.view')->with('<?php echo $singular; ?>', $<?php echo $singular; ?>);
 	}
 
 	public function get_edit($id)
 	{
-		$<?php echo $this->singular; ?> = <?php echo $this->singular_class; ?>::find($id);
+		$<?php echo $singular; ?> = <?php echo $singular_class; ?>::find($id);
 
-		if(is_null($<?php echo $this->singular; ?>))
+		if(is_null($<?php echo $singular; ?>))
 		{
-			return Redirect::to('<?php echo $this->plural; ?>');
+			return Redirect::to('<?php echo $plural; ?>');
 		}
 
-		$this->layout->title   = 'Editing <?php echo $this->singular_class; ?>';
-		$this->layout->content = View::make('<?php echo $this->plural; ?>.edit')->with('<?php echo $this->singular; ?>', $<?php echo $this->singular; ?>);
+		$this->layout->title   = 'Editing <?php echo $singular_class; ?>';
+		$this->layout->content = View::make('<?php echo $plural; ?>.edit')->with('<?php echo $singular; ?>', $<?php echo $singular; ?>);
 	}
 
 	public function post_edit($id)
@@ -71,34 +82,34 @@ class <?php echo $this->plural_class; ?>_Controller extends Controller {
 
 		if($validation->valid())
 		{
-			$<?php echo $this->singular; ?> = <?php echo $this->singular_class; ?>::find($id);
+			$<?php echo $singular; ?> = <?php echo $singular_class; ?>::find($id);
 
-			if(is_null($<?php echo $this->singular; ?>))
+			if(is_null($<?php echo $singular; ?>))
 			{
-				return Redirect::to('<?php echo $this->plural; ?>');
+				return Redirect::to('<?php echo $plural; ?>');
 			}
 
-<?php foreach($this->fields as $field => $type): ?>
-			$<?php echo $this->singular; ?>-><?php echo $field; ?> = Input::get('<?php echo $field; ?>');
+<?php foreach($fields as $field => $type): ?>
+			$<?php echo $singular; ?>-><?php echo $field; ?> = Input::get('<?php echo $field; ?>');
 <?php endforeach; ?>
 
-			$<?php echo $this->singular; ?>->save();
+			$<?php echo $singular; ?>->save();
 
-			return Redirect::to('<?php echo $this->plural; ?>');
+			return Redirect::to('<?php echo $plural; ?>');
 		}
 
-		return Redirect::to('<?php echo $this->plural; ?>');
+		return Redirect::to('<?php echo $plural; ?>');
 	}
 
 	public function get_delete($id)
 	{
-		$<?php echo $this->singular; ?> = <?php echo $this->singular_class; ?>::find($id);
+		$<?php echo $singular; ?> = <?php echo $singular_class; ?>::find($id);
 
-		if( ! is_null($<?php echo $this->singular; ?>))
+		if( ! is_null($<?php echo $singular; ?>))
 		{
-			$<?php echo $this->singular; ?>->delete();
+			$<?php echo $singular; ?>->delete();
 		}
 
-		return Redirect::to('<?php echo $this->plural; ?>');
+		return Redirect::to('<?php echo $plural; ?>');
 	}
 }
