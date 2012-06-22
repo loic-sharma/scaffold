@@ -1,9 +1,9 @@
 <div class="span16">
 	<ul class="breadcrumb span6">
 		<li>
-			<a href="<?php echo '<?php'; ?> echo URL::to('<?php echo $plural; ?>'); ?>"><?php echo $plural_class; ?></a> <span class="divider">/</span>
+			<a href="<?php echo '<?php'; ?> echo URL::to('<?php echo $plural; ?>'); ?>"><?php echo str_replace('_', ' ', $plural_class); ?></a> <span class="divider">/</span>
 		</li>
-		<li class="active">New <?php echo $singular_class; ?></li>
+		<li class="active">New <?php echo str_replace('_', ' ', $singular_class); ?></li>
 	</ul>
 </div>
 

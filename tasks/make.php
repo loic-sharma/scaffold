@@ -118,7 +118,40 @@ class Scaffold_Make_Task {
 	{
 		$model = View::make('scaffold::templates.model', $this->data)->render();
 
-		$file = path('app').'models'.DS.$this->data['singular'].EXT;
+		// Laravel's autoloader will search within nested directories if the
+		// model name contains underscores. Just in case some developer
+		// likes long table names, let's make sure that this will still work.
+		$path = path('app').'models';
+
+		if(strpos($this->data['singular'], '_'))
+		{
+			// Get all of the directories the model needs to be nested in, and
+			// plop them to the end of the path.
+			$pieces = explode('_', $this->data['singular']);
+			$count  = count($pieces);
+
+			for($i = 0; $i < $count; $i++)
+			{
+				$path .= DS.$pieces[$i];
+
+				// All of the pieces except for the very last one are directories
+				// which may not already exist. To prevent any issues from occuring,
+				// they will be created.
+				if(($i + 1) != $count)
+				{
+					if( ! is_dir($path)) mkdir($path);
+				}
+			}
+
+			// The last piece was the actual file's name, so only the extension
+			// is missing now.
+			$file = $path.EXT;
+		}
+
+		else
+		{
+			$file = $path.DS.$this->data['singular'].EXT;
+		}
 
 		File::put($file, $model);
 

@@ -1,5 +1,5 @@
 <?php echo '<?php'; ?> if(count($<?php echo $plural; ?>) == 0): ?>
-	<p>No <?php echo $plural_class; ?></p>
+	<p>No <?php echo str_replace('_', ' ', $plural); ?>.</p>
 <?php echo '<?php else: ?>'.PHP_EOL; ?>
 	<table>
 		<thead>
@@ -32,4 +32,4 @@
 	</table>
 <?php echo '<?php endif; ?>'.PHP_EOL; ?>
 
-<p><a class="btn success" href="<?php echo '<?php'; ?> echo URL::to('<?php echo $plural; ?>/create'); ?>">Create new <?php echo $singular_class; ?></a></p>
+<p><a class="btn success" href="<?php echo '<?php'; ?> echo URL::to('<?php echo $plural; ?>/create'); ?>">Create new <?php echo str_replace('_', ' ', $singular_class); ?></a></p>

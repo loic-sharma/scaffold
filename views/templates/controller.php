@@ -25,7 +25,7 @@ class <?php echo $plural_class; ?>_Controller extends Controller {
 	{
 		$<?php echo $plural; ?> = <?php echo $singular_class; ?>::all();
 
-		$this->layout->title   = '<?php echo $plural_class; ?>';
+		$this->layout->title   = '<?php echo ucwords(str_replace('_', ' ', $plural_class)); ?>';
 		$this->layout->content = View::make('<?php echo $plural; ?>.index')->with('<?php echo $plural; ?>', $<?php echo $plural; ?>);
 	}
 
@@ -36,7 +36,7 @@ class <?php echo $plural_class; ?>_Controller extends Controller {
 	 */
 	public function get_create()
 	{
-		$this->layout->title   = 'New <?php echo $singular_class; ?>';
+		$this->layout->title   = 'New <?php echo str_replace('_', ' ', $singular_class); ?>';
 		$this->layout->content = View::make('<?php echo $plural; ?>.create');
 	}
 
@@ -72,7 +72,7 @@ class <?php echo $plural_class; ?>_Controller extends Controller {
 
 			$<?php echo $singular; ?>->save();
 
-			Session::flash('message', 'Added <?php echo $singular; ?> #'.$<?php echo $singular; ?>->id);
+			Session::flash('message', 'Added <?php echo str_replace('_', ' ', $singular); ?> #'.$<?php echo $singular; ?>->id);
 
 			return Redirect::to('<?php echo $plural; ?>');
 		}
@@ -98,7 +98,7 @@ class <?php echo $plural_class; ?>_Controller extends Controller {
 			return Redirect::to('<?php echo $plural; ?>');
 		}
 
-		$this->layout->title   = 'Viewing <?php echo $singular_class; ?> #'.$id;
+		$this->layout->title   = 'Viewing <?php echo str_replace('_', ' ', $singular_class); ?> #'.$id;
 		$this->layout->content = View::make('<?php echo $plural; ?>.view')->with('<?php echo $singular; ?>', $<?php echo $singular; ?>);
 	}
 
@@ -117,7 +117,7 @@ class <?php echo $plural_class; ?>_Controller extends Controller {
 			return Redirect::to('<?php echo $plural; ?>');
 		}
 
-		$this->layout->title   = 'Editing <?php echo $singular_class; ?>';
+		$this->layout->title   = 'Editing <?php echo str_replace('_', ' ', $singular_class); ?>';
 		$this->layout->content = View::make('<?php echo $plural; ?>.edit')->with('<?php echo $singular; ?>', $<?php echo $singular; ?>);
 	}
 
@@ -155,7 +155,7 @@ class <?php echo $plural_class; ?>_Controller extends Controller {
 
 			$<?php echo $singular; ?>->save();
 
-			Session::flash('message', 'Updated <?php echo $singular; ?> #'.$<?php echo $singular; ?>->id);
+			Session::flash('message', 'Updated <?php echo str_replace('_', ' ', $singular); ?> #'.$<?php echo $singular; ?>->id);
 
 			return Redirect::to('<?php echo $plural; ?>');
 		}
@@ -180,7 +180,7 @@ class <?php echo $plural_class; ?>_Controller extends Controller {
 		{
 			$<?php echo $singular; ?>->delete();
 
-			Session::flash('message', 'Deleted <?php echo $singular; ?> #'.$<?php echo $singular; ?>->id);
+			Session::flash('message', 'Deleted <?php echo str_replace('_', ' ', $singular); ?> #'.$<?php echo $singular; ?>->id);
 		}
 
 		return Redirect::to('<?php echo $plural; ?>');
