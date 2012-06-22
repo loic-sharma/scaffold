@@ -15,7 +15,11 @@
 			<?php echo '<?php'; ?> foreach($<?php echo $plural; ?> as $<?php echo $singular; ?>): ?>
 				<tr>
 <?php foreach($fields as $field => $type): ?>
+<?php if($type != 'boolean'): ?>
 					<td><?php echo '<?php'; ?> echo $<?php echo $singular; ?>-><?php echo $field; ?>; ?></td>
+<?php else: ?>
+					<td><?php echo '<?php'; ?> echo ($<?php echo $singular; ?>-><?php echo $field; ?>) ? 'True' : 'False'; ?></td>
+<?php endif; ?>
 <?php endforeach; ?>
 					<td>
 						<a href="<?php echo '<?php'; ?> echo URL::to('<?php echo $plural; ?>/view/'.$<?php echo $singular; ?>->id); ?>">View</a>

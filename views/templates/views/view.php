@@ -11,7 +11,11 @@
 <?php foreach($fields as $field => $type): ?>
 <p>
 	<strong><?php echo $field; ?>:</strong>
+<?php if($type != 'boolean'): ?>
 	<?php echo '<?php'; ?> echo $<?php echo $singular; ?>-><?php echo $field; ?>; ?>
+<?php else: ?>
+	<?php echo '<?php'; ?> echo ($<?php echo $singular; ?>-><?php echo $field; ?>) ? 'True' : 'False'; ?>
+<?php endif; ?>
 </p>
 <?php endforeach; ?>
 

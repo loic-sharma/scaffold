@@ -49,12 +49,12 @@ class <?php echo $plural_class; ?>_Controller extends Controller {
 	{
 		$validation = Validator::make(Input::all(), array(
 <?php foreach($fields as $field => $type): ?>
-			'<?php echo $field; ?>' => array('required'<?php
-if($type == 'string'): ?>
-, 'max:255'<?php elseif($type == 'integer'): ?>
-, 'integer'<?php elseif($type == 'float'): ?>
-, 'numeric'<?php elseif($type == 'boolean'): ?>
-, 'in:0,1'<?php endif; ?>),
+			'<?php echo $field; ?>' => array(<?php if($type == 'boolean'): ?>
+'in:0,1'<?php elseif($type == 'string'): ?>
+'required', 'max:255'<?php elseif($type == 'integer'): ?>
+'required', 'integer'<?php elseif($type == 'float'): ?>
+'required', 'numeric'<?php else: ?>
+'required'<?php endif; ?>),
 <?php endforeach; ?>
 		));
 
@@ -131,12 +131,12 @@ if($type == 'string'): ?>
 	{
 		$validation = Validator::make(Input::all(), array(
 <?php foreach($fields as $field => $type): ?>
-			'<?php echo $field; ?>' => array('required'<?php
-if($type == 'string'): ?>
-, 'max:255'<?php elseif($type == 'integer'): ?>
-, 'integer'<?php elseif($type == 'float'): ?>
-, 'numeric'<?php elseif($type == 'boolean'): ?>
-, 'in:0,1'<?php endif; ?>),
+			'<?php echo $field; ?>' => array(<?php if($type == 'boolean'): ?>
+'in:0,1'<?php elseif($type == 'string'): ?>
+'required', 'max:255'<?php elseif($type == 'integer'): ?>
+'required', 'integer'<?php elseif($type == 'float'): ?>
+'required', 'numeric'<?php else: ?>
+'required'<?php endif; ?>),
 <?php endforeach; ?>
 		));
 
