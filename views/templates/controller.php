@@ -16,6 +16,11 @@ class <?php echo $plural_class; ?>_Controller extends Controller {
 	 */
 	public $restful = true;
 
+	/**
+	 * View all of the <?php echo $plural; ?>.
+	 *
+	 * @return void
+	 */
 	public function get_index()
 	{
 		$<?php echo $plural; ?> = <?php echo $singular_class; ?>::all();
@@ -24,12 +29,22 @@ class <?php echo $plural_class; ?>_Controller extends Controller {
 		$this->layout->content = View::make('<?php echo $plural; ?>.index')->with('<?php echo $plural; ?>', $<?php echo $plural; ?>);
 	}
 
+	/**
+	 * Show the form to create a new <?php echo $singular; ?>.
+	 *
+	 * @return void
+	 */
 	public function get_create()
 	{
 		$this->layout->title   = 'New <?php echo $singular_class; ?>';
 		$this->layout->content = View::make('<?php echo $plural; ?>.create');
 	}
 
+	/**
+	 * Create a new <?php echo $singular; ?>.
+	 *
+	 * @return Response
+	 */
 	public function post_create()
 	{
 		$validation = Validator::make(Input::all(), array());
@@ -50,6 +65,12 @@ class <?php echo $plural_class; ?>_Controller extends Controller {
 		return Redirect::to('<?php echo $plural; ?>');
 	}
 
+	/**
+	 * View a specific <?php echo $singular; ?>.
+	 *
+	 * @param  int   $id
+	 * @return void
+	 */
 	public function get_view($id)
 	{
 		$<?php echo $singular; ?> = <?php echo $singular_class; ?>::find($id);
@@ -63,6 +84,12 @@ class <?php echo $plural_class; ?>_Controller extends Controller {
 		$this->layout->content = View::make('<?php echo $plural; ?>.view')->with('<?php echo $singular; ?>', $<?php echo $singular; ?>);
 	}
 
+	/**
+	 * Show the form to edit a specific <?php echo $singular; ?>.
+	 *
+	 * @param  int   $id
+	 * @return void
+	 */
 	public function get_edit($id)
 	{
 		$<?php echo $singular; ?> = <?php echo $singular_class; ?>::find($id);
@@ -76,6 +103,12 @@ class <?php echo $plural_class; ?>_Controller extends Controller {
 		$this->layout->content = View::make('<?php echo $plural; ?>.edit')->with('<?php echo $singular; ?>', $<?php echo $singular; ?>);
 	}
 
+	/**
+	 * Edit a specific <?php echo $singular; ?>.
+	 *
+	 * @param  int       $id
+	 * @return Response
+	 */
 	public function post_edit($id)
 	{
 		$validation = Validator::make(Input::all(), array());
@@ -101,6 +134,12 @@ class <?php echo $plural_class; ?>_Controller extends Controller {
 		return Redirect::to('<?php echo $plural; ?>');
 	}
 
+	/**
+	 * Delete a specific <?php echo $singular; ?>.
+	 *
+	 * @param  int       $id
+	 * @return Response
+	 */
 	public function get_delete($id)
 	{
 		$<?php echo $singular; ?> = <?php echo $singular_class; ?>::find($id);
