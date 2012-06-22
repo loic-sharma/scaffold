@@ -16,7 +16,7 @@ Then, place the bundle's name in your **application/bundles.php** file.
 
 return array(
 
-	'scaffolding',
+	'scaffold',
 );
 ```
 
