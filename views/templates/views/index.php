@@ -5,7 +5,7 @@
 		<thead>
 			<tr>
 <?php foreach($fields as $field => $type): ?>
-				<th><?php echo ucwords($field); ?></th>
+				<th><?php echo ucwords(str_replace('_', ' ', $field)); ?></th>
 <?php endforeach; ?>
 				<th></th>
 			</tr>

@@ -11,7 +11,7 @@
 	<fieldset>
 <?php foreach($fields as $field => $type): ?>
 		<div class="clearfix">
-			<?php echo '<?php'; ?> echo Form::label('<?php echo $field; ?>', '<?php echo ucfirst($field); ?>'); ?>
+			<?php echo '<?php'; ?> echo Form::label('<?php echo $field; ?>', '<?php echo ucwords(str_replace('_', ' ', $field)); ?>'); ?>
 
 			<div class="input">
 <?php if(in_array($type, array('string', 'integer', 'float', 'date', 'timestamp'))): ?>

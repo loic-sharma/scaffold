@@ -10,7 +10,7 @@
 <div class="span16">
 <?php foreach($fields as $field => $type): ?>
 <p>
-	<strong><?php echo $field; ?>:</strong>
+	<strong><?php echo ucfirst($field); ?>:</strong>
 <?php if($type != 'boolean'): ?>
 	<?php echo '<?php'; ?> echo $<?php echo $singular; ?>-><?php echo $field; ?>; ?>
 <?php else: ?>
