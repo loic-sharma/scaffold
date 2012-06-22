@@ -47,22 +47,40 @@ class <?php echo $plural_class; ?>_Controller extends Controller {
 	 */
 	public function post_create()
 	{
-		$validation = Validator::make(Input::all(), array());
+		$validation = Validator::make(Input::all(), array(
+<?php foreach($fields as $field => $type): ?>
+			'<?php echo $field; ?>' => array('required'<?php
+if($type == 'string'): ?>
+, 'max:255'<?php elseif($type == 'integer'): ?>
+, 'integer'<?php elseif($type == 'float'): ?>
+, 'numeric'<?php elseif($type == 'boolean'): ?>
+, 'in:0,1'<?php endif; ?>),
+<?php endforeach; ?>
+		));
 
 		if($validation->valid())
 		{
 			$<?php echo $singular; ?> = new <?php echo $singular_class; ?>;
 
 <?php foreach($fields as $field => $type): ?>
+<?php if($type != 'boolean'): ?>
 			$<?php echo $singular; ?>-><?php echo $field; ?> = Input::get('<?php echo $field; ?>');
+<?php else: ?>
+			$<?php echo $singular; ?>-><?php echo $field; ?> = Input::get('<?php echo $field; ?>', '0');
+<?php endif; ?>
 <?php endforeach; ?>
 
 			$<?php echo $singular; ?>->save();
 
 			Session::flash('message', 'Added <?php echo $singular; ?> #'.$<?php echo $singular; ?>->id);
+
+			return Redirect::to('<?php echo $plural; ?>');
 		}
 
-		return Redirect::to('<?php echo $plural; ?>');
+		else
+		{
+			return Redirect::to('<?php echo $plural; ?>/create')->with_errors($validation->errors);
+		}
 	}
 
 	/**
@@ -111,7 +129,16 @@ class <?php echo $plural_class; ?>_Controller extends Controller {
 	 */
 	public function post_edit($id)
 	{
-		$validation = Validator::make(Input::all(), array());
+		$validation = Validator::make(Input::all(), array(
+<?php foreach($fields as $field => $type): ?>
+			'<?php echo $field; ?>' => array('required'<?php
+if($type == 'string'): ?>
+, 'max:255'<?php elseif($type == 'integer'): ?>
+, 'integer'<?php elseif($type == 'float'): ?>
+, 'numeric'<?php elseif($type == 'boolean'): ?>
+, 'in:0,1'<?php endif; ?>),
+<?php endforeach; ?>
+		));
 
 		if($validation->valid())
 		{
@@ -129,9 +156,14 @@ class <?php echo $plural_class; ?>_Controller extends Controller {
 			$<?php echo $singular; ?>->save();
 
 			Session::flash('message', 'Updated <?php echo $singular; ?> #'.$<?php echo $singular; ?>->id);
+
+			return Redirect::to('<?php echo $plural; ?>');
 		}
 
-		return Redirect::to('<?php echo $plural; ?>');
+		else
+		{
+			return Redirect::to('<?php echo $plural; ?>/edit/'.$id)->with_errors($validation->errors);
+		}
 	}
 
 	/**
