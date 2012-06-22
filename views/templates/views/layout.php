@@ -15,13 +15,11 @@
 				<h1><?php echo '<?php'; ?> echo $title; ?></h1>
 				<hr>
 
-				<?php if (false && Session::get_flash('success')): ?>
+				<?php echo '<?php'; ?> if (Session::has('message')): ?>
 					<div class="alert-message success">
-						<p>
-						<?php echo implode('</p><p>', (array) Session::get_flash('success')); ?>
-						</p>
+						<p><?php echo '<?php'; ?> echo Session::get('message'); ?></p>
 					</div>
-				<?php endif; ?>
+				<?php echo '<?php endif; ?>'.PHP_EOL; ?>
 
 				<?php echo '<?php'; ?> if($errors->has()): ?>
 					<div class="alert-message error">
