@@ -7,7 +7,7 @@ class <?php echo $plural_class; ?>_Controller extends Controller {
 	 *
 	 * @var string
 	 */
-	public $layout = '<?php echo $plural; ?>.layout';
+	public $layout = 'layouts.scaffold';
 
 	/**
 	 * Indicates if the controller uses RESTful routing.

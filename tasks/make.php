@@ -208,7 +208,23 @@ class Scaffold_Make_Task {
 	{
 		$content = View::make('scaffold::templates.views.'.$view, $this->data)->render();
 
-		$path = path('app').'views'.DS.$this->data['plural'].DS;
+		// The layout view is special. Unlike all the other views, this one is
+		// placed in the layout directory.
+		if($view == 'layout')
+		{
+			$path = path('app').'views'.DS.'layouts'.DS;
+
+			// The name of the layout has to be changed to 'scaffold' to ensure
+			// there will not be any conflicts.
+			$view = 'scaffold';
+		}
+
+		// All the other views are placed in a directory named after the
+		// table.
+		else
+		{
+			$path = path('app').'views'.DS.$this->data['plural'].DS;
+		}
 
 		// If the view directory for this table does not exist, it will
 		// need to be created before any files are created.
