@@ -29,7 +29,7 @@ class Scaffold_Make_Task {
 	 *
 	 * @var bool
 	 */
-	public $testing = true;
+	public $testing = false;
 
 	public function __construct()
 	{
