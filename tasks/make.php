@@ -12,6 +12,19 @@ class Scaffold_Make_Task {
 	public $data = array();
 
 	/**
+	 * The list of different relationships.
+	 *
+	 * @var array
+	 */
+	public $relationships = array(
+		'has_one',
+		'belongs_to',
+		'has_many',
+		'has_many_and_belongs_to',
+		'has_many_and_belongs_to',
+	);
+
+	/**
 	 * Create a new scaffold.
 	 *
 	 * @param  array  $arguments
@@ -36,6 +49,9 @@ class Scaffold_Make_Task {
 			$this->data['singular_class'] = Str::classify($this->data['singular']);
 			$this->data['plural_class'] = Str::classify($this->data['plural']);
 
+			$this->data['relationships'] = array();
+			$this->data['fields'] = array();
+
 			// If there was more than one argument passed, the user wishes
 			// to create a new table and has listed out each of the fields.
 			if($count > 1)
@@ -52,7 +68,15 @@ class Scaffold_Make_Task {
 					{
 						list($field, $type) = explode(':', $argument);
 
-						$this->data['fields'][$field] = $type;
+						if(in_array($field, $this->relationships))
+						{
+							$this->data['relationships'][$field] = explode(',', $type);
+						}
+
+						else
+						{
+							$this->data['fields'][$field] = $type;
+						}
 					}
 				}
 
