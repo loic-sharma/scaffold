@@ -20,3 +20,32 @@
 <?php endforeach; ?>
 
 <p><a href="<?php echo '<?php'; ?> echo URL::to('<?php echo $plural; ?>/edit/'.$<?php echo $singular; ?>->id); ?>">Edit</a> | <a href="<?php echo '<?php'; ?> echo URL::to('<?php echo $plural; ?>/delete/'.$<?php echo $singular; ?>->id); ?>" onclick="return confirm('Are you sure?')">Delete</a></p>
+<?php foreach($plural_relationships as $relationship => $models): ?>
+<?php foreach($models as $model): ?>
+<h2><?php echo ucwords(str_replace('_', ' ', Str::plural($model))); ?></h2>
+
+<?php echo '<?php'; ?> if(count($<?php echo $singular; ?>-><?php echo Str::plural($model); ?>) == 0): ?>
+	<p>No <?php echo str_replace('_', ' ', Str::plural($model)); ?>.</p>
+<?php echo '<?php else: ?>'.PHP_EOL; ?>
+	<table>
+		<thead>
+			<?php echo '<?php'; ?> foreach($<?php echo $singular; ?>-><?php echo Str::plural($model); ?>[0]->attributes as $field => $value): ?>
+				<th><?php echo '<?php'; ?> echo ucwords(str_replace('_', ' ', $field)); ?></th>
+			<?php echo '<?php endforeach; ?>'.PHP_EOL; ?>
+		</thead>
+
+		<tbody>
+			<?php echo '<?php'; ?> foreach($<?php echo $singular; ?>-><?php echo Str::plural($model); ?> as $<?php echo $model; ?>): ?>
+				<tr>
+					<?php echo '<?php'; ?> foreach($<?php echo $model; ?>->attributes as $field => $value): ?>
+						<td><?php echo '<?php'; ?> echo $value; ?></td>
+					<?php echo '<?php endforeach; ?>'.PHP_EOL; ?>
+				</tr>
+			<?php echo '<?php endforeach; ?>'.PHP_EOL; ?>
+		</tbody>
+	</table>
+<?php echo '<?php endif; ?>'.PHP_EOL; ?>
+
+<p><a class="btn success" href="<?php echo '<?php'; ?> echo URL::to('<?php echo Str::plural($model); ?>/create/'.$<?php echo $singular; ?>->id); ?>">Create new <?php echo str_replace('_', ' ', $model); ?></a></p>
+<?php endforeach; ?>
+<?php endforeach; ?>

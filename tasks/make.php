@@ -18,11 +18,23 @@ class Scaffold_Make_Task {
 	 */
 	public $relationships = array(
 		'has_one',
+		'has_one_or_many',
 		'belongs_to',
 		'has_many',
 		'has_many_and_belongs_to',
-		'has_many_and_belongs_to',
 	);
+
+	/**
+	 * Is the scaffold generator in testing mode?
+	 *
+	 * @var bool
+	 */
+	public $testing = true;
+
+	public function __construct()
+	{
+		$this->log('This bundle is in testing mode!');
+	}
 
 	/**
 	 * Create a new scaffold.
@@ -49,7 +61,16 @@ class Scaffold_Make_Task {
 			$this->data['singular_class'] = Str::classify($this->data['singular']);
 			$this->data['plural_class'] = Str::classify($this->data['plural']);
 
-			$this->data['relationships'] = array();
+			// Each relationship should have at least an empty array to make sure
+			// no errors occur in the template.
+			foreach($this->relationships as $relationship)
+			{
+				$this->data['relationships'][$relationship] = array();
+			}
+
+			// All models start out antisocial.
+			$this->data['has_relationships'] = false;
+
 			$this->data['fields'] = array();
 
 			// If there was more than one argument passed, the user wishes
@@ -70,6 +91,9 @@ class Scaffold_Make_Task {
 
 						if(in_array($field, $this->relationships))
 						{
+							// That's my boy!
+							$this->data['has_relationships'] = true;
+
 							$this->data['relationships'][$field] = explode(',', $type);
 						}
 
@@ -80,6 +104,7 @@ class Scaffold_Make_Task {
 					}
 				}
 
+				$this->prepare_relationships();
 				$this->create_migration();
 			}
 
@@ -104,6 +129,84 @@ class Scaffold_Make_Task {
 	}
 
 	/**
+	 * Prepare the relationship view data.
+	 *
+	 * @return void
+	 */
+	public function prepare_relationships()
+	{	
+		// Just for the sake of simplicity in the templates, we will manually
+		// separate the relationships based on plurality.
+		$this->data['single_relationships'] = array(
+			'has_one'    => $this->data['relationships']['has_one'],
+			'belongs_to' => $this->data['relationships']['belongs_to'],
+		);
+
+		// This model has some serious game!
+		$this->data['plural_relationships'] = array(
+			'has_one_or_many'         => $this->data['relationships']['has_one_or_many'],
+			'has_many'                => $this->data['relationships']['has_many'],
+			'has_many_and_belongs_to' => $this->data['relationships']['has_many_and_belongs_to'],
+		);
+
+		// If the table has relationships, each route in the controller
+		// will need to load these relationships. Let's build a list of
+		// those pesky models here. Also, relationships where the model
+		// belongs to another  model will need a field to link the two
+		// models together.
+		$this->data['with'] = '';
+
+		$this->data['belongs_to'] = array();
+		$this->data['belongs_to_params'] = '';
+
+		if($this->data['has_relationships'])
+		{
+			$belongs_to_relationships = array('belongs_to', 'has_many_and_belongs_to');
+			$plural_relationships = array_keys($this->data['plural_relationships']);
+
+			foreach($this->data['relationships'] as $relationship => $models)
+			{
+				foreach($models as $model)
+				{
+					// The plural relationships will need the model's
+					// name to be pluralized.
+					if(in_array($relationship, $plural_relationships))
+					{
+						$this->data['with'] .= "'".Str::plural($model)."', ";								
+					}
+
+					else
+					{
+						$this->data['with'] .= "'{$model}', ";
+					}
+
+					// Let's add the field to link belongs_to relationships.
+					if(in_array($relationship, $belongs_to_relationships))
+					{
+						$field = array($model.'_id' => 'integer');
+
+						// We use array_merge to add the new field to the
+						// beginning of the associative array of fields.
+						$this->data['fields'] = array_merge($field, $this->data['fields']);
+
+						// Lastly, we'll save this model just for convenience
+						// when generating the controller.
+						$this->data['belongs_to'][] = $model;
+
+						$this->data['belongs_to_params'] .= '$'.$model.'_id = null, ';
+					}
+				}
+			}
+
+			// The last two characters needs to be removed to get rid
+			// of that last comma and space.
+			$this->data['with'] = substr($this->data['with'], 0, -2);
+
+			$this->data['belongs_to_params'] = substr($this->data['belongs_to_params'], 0, -2);
+		}
+	}
+
+	/**
 	 * Create a new migration.
 	 *
 	 * @return void
@@ -114,7 +217,7 @@ class Scaffold_Make_Task {
 		// is a better way of ordering migrations than a simple integer
 		// incrementation, since developers may start working on the
 		// next migration at the same time unknowingly.
-		$prefix = date('Y_m_d_His');
+		$prefix = ( ! $this->testing) ? date('Y_m_d_His') : '0000_00_00_000000';
 
 		$path = path('app').'migrations'.DS;
 

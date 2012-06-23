@@ -23,7 +23,11 @@ class <?php echo $plural_class; ?>_Controller extends Controller {
 	 */
 	public function get_index()
 	{
+<?php if($has_relationships): ?>
+		$<?php echo $plural; ?> = <?php echo $singular_class; ?>::with(array(<?php echo $with; ?>))->get();
+<?php else: ?>
 		$<?php echo $plural; ?> = <?php echo $singular_class; ?>::all();
+<?php endif; ?>
 
 		$this->layout->title   = '<?php echo ucwords(str_replace('_', ' ', $plural_class)); ?>';
 		$this->layout->content = View::make('<?php echo $plural; ?>.index')->with('<?php echo $plural; ?>', $<?php echo $plural; ?>);
@@ -34,10 +38,18 @@ class <?php echo $plural_class; ?>_Controller extends Controller {
 	 *
 	 * @return void
 	 */
-	public function get_create()
+	public function get_create(<?php echo $belongs_to_params; ?>)
 	{
 		$this->layout->title   = 'New <?php echo str_replace('_', ' ', $singular_class); ?>';
+<?php if(count($belongs_to) == 0): ?>
 		$this->layout->content = View::make('<?php echo $plural; ?>.create');
+<?php else: ?>
+		$this->layout->content = View::make('<?php echo $plural; ?>.create', array(
+<?php foreach($belongs_to as $model): ?>
+									'<?php echo $model; ?>_id' => $<?php echo $model; ?>_id,
+<?php endforeach; ?>
+								));
+<?php endif; ?>
 	}
 
 	/**
@@ -91,7 +103,11 @@ class <?php echo $plural_class; ?>_Controller extends Controller {
 	 */
 	public function get_view($id)
 	{
+<?php if($has_relationships): ?>
+		$<?php echo $singular; ?> = <?php echo $singular_class; ?>::with(array(<?php echo $with; ?>))->find($id);
+<?php else: ?>
 		$<?php echo $singular; ?> = <?php echo $singular_class; ?>::find($id);
+<?php endif; ?>
 
 		if(is_null($<?php echo $singular; ?>))
 		{

@@ -14,12 +14,16 @@
 			<?php echo '<?php'; ?> echo Form::label('<?php echo $field; ?>', '<?php echo ucwords(str_replace('_', ' ', $field)); ?>'); ?>
 
 			<div class="input">
+<?php if(strpos($field, '_id') !== false && in_array(substr($field, 0, -3), $belongs_to)): ?>
+				<?php echo '<?php'; ?> echo Form::text('<?php echo $field; ?>', Input::old('<?php echo $field; ?>', $<?php echo $field; ?>), array('class' => 'span6')); ?>
+<?php else: ?>
 <?php if(in_array($type, array('string', 'integer', 'float', 'date', 'timestamp'))): ?>
 				<?php echo '<?php'; ?> echo Form::text('<?php echo $field; ?>', Input::old('<?php echo $field; ?>'), array('class' => 'span6')); ?>
 <?php elseif($type == 'boolean'): ?>
 				<?php echo '<?php'; ?> echo Form::checkbox('<?php echo $field; ?>', '1', Input::old('<?php echo $field; ?>')); ?>
 <?php elseif($type == 'text' || $type == 'blob'): ?>
 				<?php echo '<?php'; ?> echo Form::textarea('<?php echo $field; ?>', Input::old('<?php echo $field; ?>'), array('class' => 'span10')); ?>
+<?php endif; ?>
 <?php endif; ?>
 			</div>
 		</div>

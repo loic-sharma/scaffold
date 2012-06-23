@@ -7,6 +7,11 @@
 <?php foreach($fields as $field => $type): ?>
 				<th><?php echo ucwords(str_replace('_', ' ', $field)); ?></th>
 <?php endforeach; ?>
+<?php foreach($plural_relationships as $type => $models): ?>
+<?php foreach($models as $model): ?>
+				<th><?php echo ucwords(str_replace('_', ' ', Str::plural($model))); ?></th>
+<?php endforeach; ?>
+<?php endforeach; ?>
 				<th></th>
 			</tr>
 		</thead>
@@ -16,10 +21,19 @@
 				<tr>
 <?php foreach($fields as $field => $type): ?>
 <?php if($type != 'boolean'): ?>
+<?php if(strpos($field, '_id') !== false && in_array($model = substr($field, 0, -3), $belongs_to)): ?>
+					<td><a href="<?php echo '<?php'; ?> echo URL::to('<?php echo Str::plural($model); ?>/view/'.$<?php echo $singular; ?>->id); ?>"><?php echo '<?php'; ?> echo $<?php echo $singular; ?>-><?php echo $field; ?>; ?></a></td>
+<?php else: ?>
 					<td><?php echo '<?php'; ?> echo $<?php echo $singular; ?>-><?php echo $field; ?>; ?></td>
+<?php endif; ?>
 <?php else: ?>
 					<td><?php echo '<?php'; ?> echo ($<?php echo $singular; ?>-><?php echo $field; ?>) ? 'True' : 'False'; ?></td>
 <?php endif; ?>
+<?php endforeach; ?>
+<?php foreach($plural_relationships as $type => $models): ?>
+<?php foreach($models as $model): ?>
+					<td><?php echo '<?php'; ?> echo count($<?php echo $singular; ?>-><?php echo Str::plural($model); ?>); ?></td>
+<?php endforeach; ?>
 <?php endforeach; ?>
 					<td>
 						<a href="<?php echo '<?php'; ?> echo URL::to('<?php echo $plural; ?>/view/'.$<?php echo $singular; ?>->id); ?>">View</a>
