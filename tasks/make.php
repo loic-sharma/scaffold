@@ -31,6 +31,11 @@ class Scaffold_Make_Task {
 	 */
 	public $testing = false;
 
+	/**
+	 * Display a message if testing is turned on.
+	 *
+	 * @return void
+	 */
 	public function __construct()
 	{
 		if($this->testing)
