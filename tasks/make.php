@@ -95,7 +95,14 @@ class Scaffold_Make_Task {
 
 					else
 					{
-						list($field, $type) = explode(':', $argument);
+						$arg   = explode(':', $argument);
+						$field = $arg[0];
+						$type  = $arg[1];
+						if (isset($arg[2])) {
+							$size  = $arg[2];
+						} else {
+							$size = FALSE;
+						}
 
 						if(in_array($field, $this->relationships))
 						{
@@ -108,6 +115,8 @@ class Scaffold_Make_Task {
 						else
 						{
 							$this->data['fields'][$field] = $type;
+							if ($size)
+							$this->data['size'][$field]   = $size;
 						}
 					}
 				}
