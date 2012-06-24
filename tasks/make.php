@@ -33,7 +33,10 @@ class Scaffold_Make_Task {
 
 	public function __construct()
 	{
-		$this->log('This bundle is in testing mode!');
+		if($this->testing)
+		{
+			$this->log('This bundle is in testing mode!');
+		}
 	}
 
 	/**
