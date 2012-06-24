@@ -12,6 +12,20 @@ class Table {
 	public static $drivers = array();
 
 	/**
+	 * The list of tables on the database.
+	 *
+	 * @var array
+	 */
+	public static $tables = array();
+
+	/**
+	 * The list of fields of each table.
+	 *
+	 * @var array
+	 */
+	public static $fields = array();
+
+	/**
 	 * Get the instance of a driver.
 	 *
 	 * @param  string  $driver
@@ -63,7 +77,12 @@ class Table {
 	 */
 	public static function all()
 	{
-		return static::instance()->all();
+		if(empty(static::$tables))
+		{
+			static::$tables = static::instance()->all();
+		}
+
+		return static::$tables;
 	}
 
 	/**
@@ -73,6 +92,11 @@ class Table {
 	 */
 	public static function fields($table)
 	{
-		return static::instance()->fields($table);
+		if( ! isset(static::$fields[$table]))
+		{
+			static::$fields[$table] = static::instance()->fields($table);
+		}
+
+		return static::$fields[$table];
 	}
 }
