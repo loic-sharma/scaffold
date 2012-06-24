@@ -4,7 +4,7 @@ Easily create scaffolds to manage your database.
 
 ## Installation
 
-Install using the Artian CLI:
+Install using the Artisan CLI:
 
 	php artisan bundle:install scaffold
 	php artisan bundle:publish
@@ -37,7 +37,7 @@ Say you want to make a blog that contains posts, which you want to be able
 to create, edit, and delete. You could manually code all of that, or you
 could just run:
 
-	php artisan scaffold::make post title:string content:text timestamps
+	php artisan scaffold::make post title:string:150 content:text source:string:150:nullable timestamps
 	php artisan migrate
 
 The migration, model, controller, and views will all be automatically generated.
