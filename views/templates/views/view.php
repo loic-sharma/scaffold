@@ -29,17 +29,17 @@
 <?php echo '<?php else: ?>'.PHP_EOL; ?>
 	<table>
 		<thead>
-			<?php echo '<?php'; ?> foreach($<?php echo $singular; ?>-><?php echo Str::plural($model); ?>[0]->attributes as $field => $value): ?>
-				<th><?php echo '<?php'; ?> echo ucwords(str_replace('_', ' ', $field)); ?></th>
-			<?php echo '<?php endforeach; ?>'.PHP_EOL; ?>
+<?php foreach(scaffold\Table::fields(Str::plural($model)) as $field): ?>
+			<th><?php echo ucwords(str_replace('_', ' ', $field)); ?></th>
+<?php endforeach; ?>
 		</thead>
 
 		<tbody>
 			<?php echo '<?php'; ?> foreach($<?php echo $singular; ?>-><?php echo Str::plural($model); ?> as $<?php echo $model; ?>): ?>
 				<tr>
-					<?php echo '<?php'; ?> foreach($<?php echo $model; ?>->attributes as $field => $value): ?>
-						<td><?php echo '<?php'; ?> echo $value; ?></td>
-					<?php echo '<?php endforeach; ?>'.PHP_EOL; ?>
+<?php foreach(scaffold\Table::fields(Str::plural($model)) as $field): ?>
+					<td><?php echo '<?php'; ?> echo $<?php echo $model; ?>-><?php echo $field; ?>; ?></td>
+<?php endforeach; ?>
 				</tr>
 			<?php echo '<?php endforeach; ?>'.PHP_EOL; ?>
 		</tbody>
