@@ -30,7 +30,9 @@
 	<table>
 		<thead>
 <?php foreach(scaffold\Table::fields(Str::plural($model)) as $field): ?>
+<?php if($field != 'id' && $field != $singular.'_id'): ?>
 			<th><?php echo ucwords(str_replace('_', ' ', $field)); ?></th>
+<?php endif; ?>
 <?php endforeach; ?>
 		</thead>
 
@@ -38,7 +40,9 @@
 			<?php echo '<?php'; ?> foreach($<?php echo $singular; ?>-><?php echo Str::plural($model); ?> as $<?php echo $model; ?>): ?>
 				<tr>
 <?php foreach(scaffold\Table::fields(Str::plural($model)) as $field): ?>
+<?php if($field != 'id' && $field != $singular.'_id'): ?>
 					<td><?php echo '<?php'; ?> echo $<?php echo $model; ?>-><?php echo $field; ?>; ?></td>
+<?php endif; ?>
 <?php endforeach; ?>
 				</tr>
 			<?php echo '<?php endforeach; ?>'.PHP_EOL; ?>
