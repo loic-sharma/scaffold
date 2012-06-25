@@ -1,5 +1,10 @@
 <div class="span16">
 	<ul class="breadcrumb span6">
+<?php if( ! empty($belongs_to)): ?>
+		<li>
+			<a href="<?php echo '<?php'; ?> echo URL::to('<?php echo Str::plural($belongs_to[0]); ?>'); ?>"><?php echo ucwords(str_replace('_', ' ', Str::plural($belongs_to[0]))); ?></a> <span class="divider">/</span>
+		</li>
+<?php endif; ?>
 		<li>
 			<a href="<?php echo '<?php'; ?> echo URL::to('<?php echo $plural; ?>'); ?>"><?php echo str_replace('_', ' ', $plural_class); ?></a> <span class="divider">/</span>
 		</li>
