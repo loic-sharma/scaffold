@@ -95,27 +95,36 @@ class Scaffold_Make_Task {
 
 					else
 					{
-						$arg      = explode(':', $argument);
-						$field    = $arg[0];
-						$type     = $arg[1];
-						$size     = is_numeric($arg[2]) ? $arg[2] : NULL;
-						$nullable = in_array('nullable', $arg);
+						// Each argument contains data concatenated by a semi-colon.
+						$pieces = explode(':', $argument);
 
-						if(in_array($field, $this->relationships))
+						// Determine if the user wishes to define a new
+						// relationship.
+						if(in_array($pieces[0], $this->relationships))
 						{
+							$relationship = $pieces[0];
+
 							// That's my boy!
 							$this->data['has_relationships'] = true;
 
-							$this->data['relationships'][$field] = explode(',', $type);
+							$this->data['relationships'][$relationship] = explode(',', $pieces[1]);
 						}
 
+						// If the user is not defining a new relatinship, then
+						// the user is creating a new field.
 						else
 						{
-							$this->data['fields'][$field] = $type;
-							$this->data['nullable'][$field] = $type;
-							if ($size)
-								$this->data['size'][$field]   = $size;
+							$field = $pieces[0];
 
+							// The second piece is the field's type.
+							$this->data['fields'][$field] = $pieces[1];
+							$this->data['nullable'][$field] = in_array('nullable', $pieces);
+
+							// Don't set a size unless one was given.
+							if( isset($pieces[2]) && is_numeric($pieces[2]))
+							{
+								$this->data['size'][$field] = $pieces[2];
+							}
 						}
 					}
 				}
