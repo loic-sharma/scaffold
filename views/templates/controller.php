@@ -63,10 +63,10 @@ class <?php echo $plural_class; ?>_Controller extends Controller {
 <?php foreach($fields as $field => $type): ?>
 			'<?php echo $field; ?>' => array(<?php if($type == 'boolean'): ?>
 'in:0,1'<?php elseif($type == 'string'): ?>
-'required', 'max:255'<?php elseif($type == 'integer'): ?>
-'required', 'integer'<?php elseif($type == 'float'): ?>
-'required', 'numeric'<?php else: ?>
-'required'<?php endif; ?>),
+'required'<?php if(isset($size[$field])): ?>, 'max:<?php echo $size[$field]; ?>'<?php endif; ?><?php elseif($type == 'integer'): ?>
+'required', 'integer'<?php if(isset($size[$field])): ?>, 'max:<?php echo $size[$field]; ?>'<?php endif; ?><?php elseif($type == 'float'): ?>
+'required', 'numeric'<?php if(isset($size[$field])): ?>, 'max:<?php echo $size[$field]; ?>'<?php endif; ?><?php else: ?>
+'required'<?php if(isset($size[$field])): ?>, 'max:<?php echo $size[$field]; ?>'<?php endif; ?><?php endif; ?>),
 <?php endforeach; ?>
 		));
 
@@ -149,10 +149,10 @@ class <?php echo $plural_class; ?>_Controller extends Controller {
 <?php foreach($fields as $field => $type): ?>
 			'<?php echo $field; ?>' => array(<?php if($type == 'boolean'): ?>
 'in:0,1'<?php elseif($type == 'string'): ?>
-'required', 'max:255'<?php elseif($type == 'integer'): ?>
-'required', 'integer'<?php elseif($type == 'float'): ?>
-'required', 'numeric'<?php else: ?>
-'required'<?php endif; ?>),
+'required'<?php if(isset($size[$field])): ?>, 'max:<?php echo $size[$field]; ?>'<?php endif; ?><?php elseif($type == 'integer'): ?>
+'required', 'integer'<?php if(isset($size[$field])): ?>, 'max:<?php echo $size[$field]; ?>'<?php endif; ?><?php elseif($type == 'float'): ?>
+'required', 'numeric'<?php if(isset($size[$field])): ?>, 'max:<?php echo $size[$field]; ?>'<?php endif; ?><?php else: ?>
+'required'<?php if(isset($size[$field])): ?>, 'max:<?php echo $size[$field]; ?>'<?php endif; ?><?php endif; ?>),
 <?php endforeach; ?>
 		));
 

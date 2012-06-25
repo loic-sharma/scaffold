@@ -110,7 +110,7 @@ class Scaffold_Make_Task {
 							$this->data['relationships'][$relationship] = explode(',', $pieces[1]);
 						}
 
-						// If the user is not defining a new relatinship, then
+						// If the user is not defining a new relationship, then
 						// the user is creating a new field.
 						else
 						{
