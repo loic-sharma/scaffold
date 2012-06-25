@@ -14,7 +14,7 @@ class Create_<?php echo $plural_class; ?>_Table {
 			$table->increments('id');
 
 <?php foreach($fields as $field => $type): ?>
-			$table-><?php echo $type ?>('<?php echo $field; ?>'<?php if(isset($size[$field])) echo ', '.$size[$field]; ?>)<?php if ($nullable[$field]) echo '->nullable()'; ?>;
+			$table-><?php echo $type ?>('<?php echo $field; ?>'<?php if(isset($size[$field])) echo ', '.$size[$field]; ?>)<?php if (isset($nullable[$field]) && $nullable[$field]) echo '->nullable()'; ?>;
 <?php endforeach; ?>
 <?php if($timestamps): ?>
 
