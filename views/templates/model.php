@@ -22,7 +22,7 @@ class <?php echo $singular_class; ?> extends Eloquent {
 	/**
 	 * Establish the relationship between a <?php echo $singular; ?> and <?php echo str_replace('_', ' ', Str::plural($model)); ?>.
 	 *
-	 * @return Laravel\Database\Eloquent\Relationships\<?php echo Str::classify($relationship).PHP_EOL; ?>)
+	 * @return Laravel\Database\Eloquent\Relationships\<?php echo Str::classify($relationship).PHP_EOL; ?>
 	 */
 	public function <?php echo Str::plural($model); ?>()
 <?php else: ?>
