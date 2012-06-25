@@ -22,7 +22,7 @@
 <?php foreach($fields as $field => $type): ?>
 <?php if($type != 'boolean'): ?>
 <?php if(strpos($field, '_id') !== false && in_array($model = substr($field, 0, -3), $belongs_to)): ?>
-					<td><a href="<?php echo '<?php'; ?> echo URL::to('<?php echo Str::plural($model); ?>/view/'.$<?php echo $singular; ?>->id); ?>"><?php echo '<?php'; ?> echo $<?php echo $singular; ?>-><?php echo $field; ?>; ?></a></td>
+					<td><a href="<?php echo '<?php'; ?> echo URL::to('<?php echo Str::plural($model); ?>/view/'.$<?php echo $singular; ?>->id); ?>"><?php echo ucwords(str_replace('_', ' ', $model)); ?> #<?php echo '<?php'; ?> echo $<?php echo $singular; ?>-><?php echo $field; ?>; ?></a></td>
 <?php else: ?>
 					<td><?php echo '<?php'; ?> echo $<?php echo $singular; ?>-><?php echo $field; ?>; ?></td>
 <?php endif; ?>
