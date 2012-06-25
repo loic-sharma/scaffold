@@ -34,6 +34,7 @@
 			<th><?php echo ucwords(str_replace('_', ' ', $field)); ?></th>
 <?php endif; ?>
 <?php endforeach; ?>
+			<th></th>
 		</thead>
 
 		<tbody>
@@ -44,6 +45,7 @@
 					<td><?php echo '<?php'; ?> echo $<?php echo $model; ?>-><?php echo $field; ?>; ?></td>
 <?php endif; ?>
 <?php endforeach; ?>
+					<td><a href="<?php echo '<?php'; ?> echo URL::to('<?php echo Str::plural($model); ?>/view/'.$<?php echo $model; ?>->id); ?>">View</a> <a href="<?php echo '<?php'; ?> echo URL::to('<?php echo Str::plural($model); ?>/edit/'.$<?php echo $model; ?>->id); ?>">Edit</a> <a href="<?php echo '<?php'; ?> echo URL::to('<?php echo Str::plural($model); ?>/delete/'.$<?php echo $model; ?>->id); ?>">Delete</a></td>
 				</tr>
 			<?php echo '<?php endforeach; ?>'.PHP_EOL; ?>
 		</tbody>
