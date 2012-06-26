@@ -5,11 +5,25 @@ use Laravel\CLI\Command;
 class Scaffold_Make_Task {
 
 	/**
+	 * The database connection the scaffold will use.
+	 *
+	 * @var string
+	 */
+	public $connection;
+
+	/**
 	 * The table's data.
 	 *
 	 * @var array
 	 */
 	public $data = array();
+
+	/**
+	 * The type of parser the views will use.
+	 *
+	 * @var string
+	 */
+	public $parser;
 
 	/**
 	 * The list of different relationships.
@@ -52,6 +66,9 @@ class Scaffold_Make_Task {
 	 */
 	public function run($arguments)
 	{
+		$this->connection = Config::get('scaffold::scaffold.connection');
+		$this->parser = Config::get('scaffold::scaffold.parser');
+
 		$count = count($arguments);
 
 		if($count == 0)
@@ -254,7 +271,7 @@ class Scaffold_Make_Task {
 		$file = $path.$prefix.'_create_'.$this->data['plural'].'_table'.EXT;
 
 		// Generate the migration.
-		$migration = View::make('scaffold::templates.migration', $this->data)->render();
+		$migration = View::make('scaffold::migration', $this->data)->render();
 
 		File::put($file, $migration);
 
@@ -268,7 +285,7 @@ class Scaffold_Make_Task {
 	 */
 	public function create_model()
 	{
-		$model = View::make('scaffold::templates.model', $this->data)->render();
+		$model = View::make('scaffold::model', $this->data)->render();
 
 		// Laravel's autoloader will search within nested directories if the
 		// model name contains underscores. Just in case some developer
@@ -317,7 +334,7 @@ class Scaffold_Make_Task {
 	 */
 	public function create_controller()
 	{
-		$controller = View::make('scaffold::templates.controller', $this->data)->render();
+		$controller = View::make('scaffold::controller', $this->data)->render();
 
 		$file = path('app').'controllers'.DS.$this->data['plural'].EXT;
 
@@ -334,7 +351,7 @@ class Scaffold_Make_Task {
 	 */
 	public function create_view($view)
 	{
-		$content = View::make('scaffold::templates.views.'.$view, $this->data)->render();
+		$content = View::make('scaffold::'.$this->parser.'.'.$view, $this->data)->render();
 
 		// The layout view is special. Unlike all the other views, this one is
 		// placed in the layout directory.
@@ -358,7 +375,17 @@ class Scaffold_Make_Task {
 		// need to be created before any files are created.
 		if ( ! is_dir($path)) mkdir($path);
 
-		$file = $path.$view.EXT;
+		if($this->parser == 'blade')
+		{
+			$extension = BLADE_EXT;
+		}
+
+		else
+		{
+			$extension = EXT;
+		}
+
+		$file = $path.$view.$extension;
 
 		File::put($file, $content);
 
