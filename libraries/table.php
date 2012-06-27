@@ -1,4 +1,4 @@
-<?php namespace scaffold;
+<?php namespace Scaffold;
 
 use DB;
 

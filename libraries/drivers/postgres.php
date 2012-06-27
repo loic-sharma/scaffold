@@ -1,8 +1,8 @@
-<?php namespace scaffold\Drivers;
+<?php namespace Scaffold\Drivers;
 
 use PDO;
 
-class Postgres extends Driver {
+class Postgres extends Driver  {
 
 	/**
 	 * List all of the tables in the database.
@@ -21,5 +21,22 @@ class Postgres extends Driver {
 	 */
 	public function fields($table)
 	{
+		$fields = array();
+
+		try
+		{
+			$columns = $this->pdo->query("SELECT * FROM information_schema.columns WHERE table_name = '$table'")->fetchAll(PDO::FETCH_ASSOC);
+	
+			foreach ($columns as $column)
+			{
+				$fields[] = $column['column_name'];
+			}
+		}
+		catch (Exception $e)
+		{
+			throw new Exception($e->errorInfo[2]);
+		}
+
+		return $fields;
 	}
 }

@@ -4,18 +4,6 @@ return array(
 
 	/*
 	|--------------------------------------------------------------------------
-	| Database Connection
-	|--------------------------------------------------------------------------
-	|
-	| The name of the database connection to use when creating the scaffolds.
-	| By default, the default database connection is used.
-	|
-	*/
-
-	'connection' => Config::get('database.default'),
-
-	/*
-	|--------------------------------------------------------------------------
 	| View Parser
 	|--------------------------------------------------------------------------
 	|

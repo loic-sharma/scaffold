@@ -5,13 +5,6 @@ use Laravel\CLI\Command;
 class Scaffold_Make_Task {
 
 	/**
-	 * The database connection the scaffold will use.
-	 *
-	 * @var string
-	 */
-	public $connection;
-
-	/**
 	 * The table's data.
 	 *
 	 * @var array
@@ -66,7 +59,6 @@ class Scaffold_Make_Task {
 	 */
 	public function run($arguments)
 	{
-		$this->connection = Config::get('scaffold::scaffold.connection');
 		$this->parser = Config::get('scaffold::scaffold.parser');
 
 		$count = count($arguments);

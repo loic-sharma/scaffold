@@ -1,4 +1,4 @@
-<?php namespace scaffold\Drivers;
+<?php namespace Scaffold\Drivers;
 
 use PDO;
 
