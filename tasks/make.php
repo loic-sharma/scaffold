@@ -36,20 +36,7 @@ class Scaffold_Make_Task {
 	 *
 	 * @var bool
 	 */
-	public $testing = false;
-
-	/**
-	 * Display a message if testing is turned on.
-	 *
-	 * @return void
-	 */
-	public function __construct()
-	{
-		if($this->testing)
-		{
-			$this->log('This bundle is in testing mode!');
-		}
-	}
+	public $testing;
 
 	/**
 	 * Create a new scaffold.
@@ -59,7 +46,13 @@ class Scaffold_Make_Task {
 	 */
 	public function run($arguments)
 	{
-		$this->parser = Config::get('scaffold::scaffold.parser');
+		$this->parser  = Config::get('scaffold::scaffold.parser');
+		$this->testing = Config::get('scaffold::scaffold.testing');
+
+		if($this->testing)
+		{
+			$this->log('This bundle is in testing mode!');
+		}
 
 		$count = count($arguments);
 
@@ -142,11 +135,11 @@ class Scaffold_Make_Task {
 				$this->create_migration();
 			}
 
-			// If only the table's name was passed, the user expects the
-			// scaffolding to use an already existing table. 
+			// If only the table's name was passed, nothing can be done.
+			// Simply error out.
 			else
 			{
-				echo 'Generating scaffolding for an already existing table isn\'t implemented yet.';
+				$this->log('The '.$this->data['singular'].' scaffold needs attributes.');
 
 				return;
 			}
@@ -267,7 +260,7 @@ class Scaffold_Make_Task {
 
 		File::put($file, $migration);
 
-		$this->log('created migration: '.$file);
+		$this->log('created migration: create_'.$this->data['plural'].'_table');
 	}
 
 	/**
@@ -392,6 +385,6 @@ class Scaffold_Make_Task {
 	 */
 	public function log($message)
 	{
-		echo "\t".str_replace(path('base'), '', $message).PHP_EOL;
+		echo '  '.str_replace(path('base'), '', $message).PHP_EOL;
 	}
 }
