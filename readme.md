@@ -107,13 +107,3 @@ when rows are created or updated. If `timestamps` is omitted, the scaffold
 will not do this.
 
 **Note**: Don't forget to run your migrations after you create a new scaffold!
-
-### Using an existing Table to create a Scaffolding
-
-**Note**: This is not implemented yet.
-
-To create a new scaffold on an already existing table, simply run:
-
-	php artisan scaffold::make post
-
-Notice that the singular form of the table name is given.
