@@ -56,13 +56,23 @@ class Scaffold_Make_Task {
 
 		$count = count($arguments);
 
+		// If there are zero arguments, we were given absolutely nothing.
 		if($count == 0)
 		{
-			echo 'I need a table name!';
+			$this->log('I need a table name!');
+		}
+
+		// If there is one argument, only the scaffold's name was passed. This
+		// task requires attributes as well.
+		elseif($count == 1)
+		{
+			$this->log('The scaffold must have attributes!');
 		}
 
 		else
 		{
+			// Let's prepare all of the default data to prevent any errors
+			// in the generated files.
 			$this->data['timestamps'] = false;
 
 			$this->data['singular'] = array_shift($arguments);
@@ -71,78 +81,24 @@ class Scaffold_Make_Task {
 			$this->data['singular_class'] = Str::classify($this->data['singular']);
 			$this->data['plural_class'] = Str::classify($this->data['plural']);
 
-			// Each relationship should have at least an empty array to make sure
-			// no errors occur in the template.
 			foreach($this->relationships as $relationship)
 			{
 				$this->data['relationships'][$relationship] = array();
 			}
 
-			// All models start out antisocial.
 			$this->data['has_relationships'] = false;
 
 			$this->data['fields'] = array();
 
-			// If there was more than one argument passed, the user wishes
-			// to create a new table and has listed out each of the fields.
-			if($count > 1)
+
+			// Build an array of the fields.
+			foreach($arguments as $argument)
 			{
-				// Build an array of the fields.
-				foreach($arguments as $argument)
-				{
-					if($argument == 'timestamps')
-					{
-						$this->data['timestamps'] = true;
-					}
-
-					else
-					{
-						// Each argument contains data concatenated by a semi-colon.
-						$pieces = explode(':', $argument);
-
-						// Determine if the user wishes to define a new
-						// relationship.
-						if(in_array($pieces[0], $this->relationships))
-						{
-							$relationship = $pieces[0];
-
-							// That's my boy!
-							$this->data['has_relationships'] = true;
-
-							$this->data['relationships'][$relationship] = explode(',', $pieces[1]);
-						}
-
-						// If the user is not defining a new relationship, then
-						// the user is creating a new field.
-						else
-						{
-							$field = $pieces[0];
-
-							// The second piece is the field's type.
-							$this->data['fields'][$field] = $pieces[1];
-							$this->data['nullable'][$field] = in_array('nullable', $pieces);
-
-							// Don't set a size unless one was given.
-							if( isset($pieces[2]) && is_numeric($pieces[2]))
-							{
-								$this->data['size'][$field] = $pieces[2];
-							}
-						}
-					}
-				}
-
-				$this->prepare_relationships();
-				$this->create_migration();
+				$this->extract_argument_data($argument);
 			}
 
-			// If only the table's name was passed, nothing can be done.
-			// Simply error out.
-			else
-			{
-				$this->log('The '.$this->data['singular'].' scaffold needs attributes.');
-
-				return;
-			}
+			$this->prepare_relationships();
+			$this->create_migration();
 
 			$this->create_controller();
 			$this->create_model();
@@ -152,6 +108,62 @@ class Scaffold_Make_Task {
 			$this->create_view('view');
 			$this->create_view('create');
 			$this->create_view('edit');
+		}
+	}
+
+	/**
+	 * Extract the data from an argument.
+	 *
+	 * @param  string  $argument
+	 * @return void
+	 */
+	public function extract_argument_data($argument)
+	{
+		if($argument == 'timestamps')
+		{
+			$this->data['timestamps'] = true;
+		}
+
+		else
+		{
+			// The timestamps argument is the only argument that should not
+			// have a colon. Let's just make sure the argument is valid just
+			// to be safe.
+			if(strpos($argument, ':') !== false)
+			{
+				$pieces = explode(':', $argument);
+
+				// Determine if the argument defines a relationship.
+				if(in_array($pieces[0], $this->relationships))
+				{
+					$this->data['has_relationships'] = true;
+
+					// The first piece is the type of the relationship.
+					$relationship = $pieces[0];
+
+					// The second piece contains all of the models that are
+					// part of this relationship, separated by a comma.
+					$this->data['relationships'][$relationship] = explode(',', $pieces[1]);
+				}
+
+				// If the argument is not defining a new relationship, it must
+				// then be adding a new attribute to the scaffold.
+				else
+				{
+					// The first piece is the field's name.
+					$field = $pieces[0];
+
+					// The second piece is the field's type.
+					$this->data['fields'][$field] = $pieces[1];
+					$this->data['nullable'][$field] = in_array('nullable', $pieces);
+
+					// Don't set a size unless one was given.
+					if( isset($pieces[2]) and is_numeric($pieces[2]))
+					{
+						$this->data['size'][$field] = $pieces[2];
+					}
+				}
+			}
 		}
 	}
 
@@ -169,7 +181,6 @@ class Scaffold_Make_Task {
 			'belongs_to' => $this->data['relationships']['belongs_to'],
 		);
 
-		// This model has some serious game!
 		$this->data['plural_relationships'] = array(
 			'has_one_or_many'         => $this->data['relationships']['has_one_or_many'],
 			'has_many'                => $this->data['relationships']['has_many'],
@@ -179,7 +190,7 @@ class Scaffold_Make_Task {
 		// If the table has relationships, each route in the controller
 		// will need to load these relationships. Let's build a list of
 		// those pesky models here. Also, relationships where the model
-		// belongs to another  model will need a field to link the two
+		// belongs to another model will need a field to link the two
 		// models together.
 		$this->data['with'] = '';
 
@@ -225,8 +236,8 @@ class Scaffold_Make_Task {
 				}
 			}
 
-			// The last two characters needs to be removed to get rid
-			// of that last comma and space.
+			// The last two characters needs to be removed to get rid of the
+			// last comma and space.
 			$this->data['with'] = substr($this->data['with'], 0, -2);
 
 			$this->data['belongs_to_params'] = substr($this->data['belongs_to_params'], 0, -2);
