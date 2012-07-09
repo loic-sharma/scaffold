@@ -12,13 +12,6 @@ class Table {
 	public static $drivers = array();
 
 	/**
-	 * The list of tables on the database.
-	 *
-	 * @var array
-	 */
-	public static $tables = array();
-
-	/**
 	 * The list of fields of each table.
 	 *
 	 * @var array
@@ -33,6 +26,8 @@ class Table {
 	 */
 	public static function instance($driver = null)
 	{
+		// If no driver is given we will use the driver that the current
+		// connection uses.
 		if(is_null($driver)) $driver = DB::connection()->config['driver'];
 
 		if( ! isset(static::$drivers[$driver]))
@@ -71,27 +66,13 @@ class Table {
 	}
 
 	/**
-	 * List all of the tables in the database.
-	 *
-	 * @return array
-	 */
-	public static function all()
-	{
-		if(empty(static::$tables))
-		{
-			static::$tables = static::instance()->all();
-		}
-
-		return static::$tables;
-	}
-
-	/**
 	 * List all of the fields of a table in the database.
 	 *
 	 * @return array
 	 */
 	public static function fields($table)
 	{
+		// The list of fields for a table will be internally cached.
 		if( ! isset(static::$fields[$table]))
 		{
 			static::$fields[$table] = static::instance()->fields($table);
