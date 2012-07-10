@@ -2,7 +2,7 @@
 	<ul class="breadcrumb span6">
 <?php if( ! empty($belongs_to)): ?>
 		<li>
-			<a href="<?php echo '<?php'; ?> echo URL::to('<?php echo Str::plural($belongs_to[0]); ?>/view/'.$<?php echo $singular; ?>-><?php echo $belongs_to[0]; ?>->id); ?>"><?php echo ucwords(str_replace('_', ' ', $belongs_to[0])); ?></a> <span class="divider">/</span>
+			<a href="<?php echo '<?php'; ?> echo URL::to('<?php echo $url[$belongs_to[0]]; ?>/view/'.$<?php echo $singular; ?>-><?php echo $belongs_to[0]; ?>->id); ?>"><?php echo ucwords(str_replace('_', ' ', $belongs_to[0])); ?></a> <span class="divider">/</span>
 		</li>
 <?php endif; ?>
 		<li>

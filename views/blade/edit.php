@@ -2,11 +2,11 @@
 	<ul class="breadcrumb span6">
 <?php if( ! empty($belongs_to)): ?>
 		<li>
-			<a href="{{URL::to('<?php echo Str::plural($belongs_to[0]); ?>/view/'.$<?php echo $singular; ?>-><?php echo $belongs_to[0]; ?>->id)}}"><?php echo ucwords(str_replace('_', ' ', $belongs_to[0])); ?></a> <span class="divider">/</span>
+			<a href="{{URL::to('<?php echo $url[$belongs_to[0]]; ?>/view/'.$<?php echo $singular; ?>-><?php echo $belongs_to[0]; ?>->id)}}"><?php echo ucwords(str_replace('_', ' ', $belongs_to[0])); ?></a> <span class="divider">/</span>
 		</li>
 <?php endif; ?>
 		<li>
-			<a href="{{URL::to('<?php echo $plural; ?>')}}"><?php echo str_replace('_', ' ', $plural_class); ?></a> <span class="divider">/</span>
+			<a href="{{URL::to('<?php echo $nested_path.$plural; ?>')}}"><?php echo str_replace('_', ' ', $plural_class); ?></a> <span class="divider">/</span>
 		</li>
 		<li class="active">Editing <?php echo str_replace('_', ' ', $singular_class); ?></li>
 	</ul>
