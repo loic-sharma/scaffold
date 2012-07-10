@@ -6,7 +6,7 @@
 		</li>
 <?php endif; ?>
 		<li>
-			<a href="{{URL::to('<?php echo $plural; ?>')}}"><?php echo str_replace('_', ' ', $plural_class); ?></a> <span class="divider">/</span>
+			<a href="{{URL::to('<?php echo $nested_path.$plural; ?>')}}"><?php echo str_replace('_', ' ', $plural_class); ?></a> <span class="divider">/</span>
 		</li>
 		<li class="active">Viewing <?php echo str_replace('_', ' ', $singular_class); ?></li>
 	</ul>
@@ -24,7 +24,7 @@
 </p>
 <?php endforeach; ?>
 
-<p><a href="{{URL::to('<?php echo $plural; ?>/edit/'.$<?php echo $singular; ?>->id)}}">Edit</a> | <a href="{{URL::to('<?php echo $plural; ?>/delete/'.$<?php echo $singular; ?>->id)}}" onclick="return confirm('Are you sure?')">Delete</a></p>
+<p><a href="{{URL::to('<?php echo $nested_path.$plural; ?>/edit/'.$<?php echo $singular; ?>->id)}}">Edit</a> | <a href="{{URL::to('<?php echo $nested_path.$plural; ?>/delete/'.$<?php echo $singular; ?>->id)}}" onclick="return confirm('Are you sure?')">Delete</a></p>
 <?php foreach($plural_relationships as $relationship => $models): ?>
 <?php foreach($models as $model): ?>
 <h2><?php echo ucwords(str_replace('_', ' ', Str::plural($model))); ?></h2>
@@ -50,13 +50,13 @@
 					<td>{{$<?php echo $model; ?>-><?php echo $field; ?>}}</td>
 <?php endif; ?>
 <?php endforeach; ?>
-					<td><a href="{{URL::to('<?php echo Str::plural($model); ?>/view/'.$<?php echo $model; ?>->id)}}">View</a> <a href="{{URL::to('<?php echo Str::plural($model); ?>/edit/'.$<?php echo $model; ?>->id)}}">Edit</a> <a href="{{URL::to('<?php echo Str::plural($model); ?>/delete/'.$<?php echo $model; ?>->id)}}">Delete</a></td>
+					<td><a href="{{URL::to('<?php echo $url[$model]; ?>/view/'.$<?php echo $model; ?>->id)}}">View</a> <a href="{{URL::to('<?php echo $url[$model]; ?>/edit/'.$<?php echo $model; ?>->id)}}">Edit</a> <a href="{{URL::to('<?php echo $url[$model]; ?>/delete/'.$<?php echo $model; ?>->id)}}">Delete</a></td>
 				</tr>
 			@endforeach
 		</tbody>
 	</table>
 @endif
 
-<p><a class="btn success" href="{{URL::to('<?php echo Str::plural($model); ?>/create/'.$<?php echo $singular; ?>->id)}}">Create new <?php echo str_replace('_', ' ', $model); ?></a></p>
+<p><a class="btn success" href="{{URL::to('<?php echo $url[$model]; ?>/create/'.$<?php echo $singular; ?>->id)}}">Create new <?php echo str_replace('_', ' ', $model); ?></a></p>
 <?php endforeach; ?>
 <?php endforeach; ?>

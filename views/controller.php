@@ -30,7 +30,7 @@ class <?php echo $plural_class; ?>_Controller extends Controller {
 <?php endif; ?>
 
 		$this->layout->title   = '<?php echo ucwords(str_replace('_', ' ', $plural_class)); ?>';
-		$this->layout->content = View::make('<?php echo $plural; ?>.index')->with('<?php echo $plural; ?>', $<?php echo $plural; ?>);
+		$this->layout->content = View::make('<?php echo $nested_view.$plural; ?>.index')->with('<?php echo $plural; ?>', $<?php echo $plural; ?>);
 	}
 
 	/**
@@ -42,9 +42,9 @@ class <?php echo $plural_class; ?>_Controller extends Controller {
 	{
 		$this->layout->title   = 'New <?php echo str_replace('_', ' ', $singular_class); ?>';
 <?php if(count($belongs_to) == 0): ?>
-		$this->layout->content = View::make('<?php echo $plural; ?>.create');
+		$this->layout->content = View::make('<?php echo $nested_view.$plural; ?>.create');
 <?php else: ?>
-		$this->layout->content = View::make('<?php echo $plural; ?>.create', array(
+		$this->layout->content = View::make('<?php echo $nested_view.$plural; ?>.create', array(
 <?php foreach($belongs_to as $model): ?>
 									'<?php echo $model; ?>_id' => $<?php echo $model; ?>_id,
 <?php endforeach; ?>
@@ -86,12 +86,12 @@ class <?php echo $plural_class; ?>_Controller extends Controller {
 
 			Session::flash('message', 'Added <?php echo str_replace('_', ' ', $singular); ?> #'.$<?php echo $singular; ?>->id);
 
-			return Redirect::to('<?php echo $plural; ?>');
+			return Redirect::to('<?php echo $nested_path.$plural; ?>');
 		}
 
 		else
 		{
-			return Redirect::to('<?php echo $plural; ?>/create')->with_errors($validation->errors);
+			return Redirect::to('<?php echo $nested_path.$plural; ?>/create')->with_errors($validation->errors);
 		}
 	}
 
@@ -111,11 +111,11 @@ class <?php echo $plural_class; ?>_Controller extends Controller {
 
 		if(is_null($<?php echo $singular; ?>))
 		{
-			return Redirect::to('<?php echo $plural; ?>');
+			return Redirect::to('<?php echo $nested_path.$plural; ?>');
 		}
 
 		$this->layout->title   = 'Viewing <?php echo str_replace('_', ' ', $singular_class); ?> #'.$id;
-		$this->layout->content = View::make('<?php echo $plural; ?>.view')->with('<?php echo $singular; ?>', $<?php echo $singular; ?>);
+		$this->layout->content = View::make('<?php echo $nested_view.$plural; ?>.view')->with('<?php echo $singular; ?>', $<?php echo $singular; ?>);
 	}
 
 	/**
@@ -130,11 +130,11 @@ class <?php echo $plural_class; ?>_Controller extends Controller {
 
 		if(is_null($<?php echo $singular; ?>))
 		{
-			return Redirect::to('<?php echo $plural; ?>');
+			return Redirect::to('<?php echo $nested_path.$plural; ?>');
 		}
 
 		$this->layout->title   = 'Editing <?php echo str_replace('_', ' ', $singular_class); ?>';
-		$this->layout->content = View::make('<?php echo $plural; ?>.edit')->with('<?php echo $singular; ?>', $<?php echo $singular; ?>);
+		$this->layout->content = View::make('<?php echo $nested_view.$plural; ?>.edit')->with('<?php echo $singular; ?>', $<?php echo $singular; ?>);
 	}
 
 	/**
@@ -162,7 +162,7 @@ class <?php echo $plural_class; ?>_Controller extends Controller {
 
 			if(is_null($<?php echo $singular; ?>))
 			{
-				return Redirect::to('<?php echo $plural; ?>');
+				return Redirect::to('<?php echo $nested_path.$plural; ?>');
 			}
 
 <?php foreach($fields as $field => $type): ?>
@@ -173,12 +173,12 @@ class <?php echo $plural_class; ?>_Controller extends Controller {
 
 			Session::flash('message', 'Updated <?php echo str_replace('_', ' ', $singular); ?> #'.$<?php echo $singular; ?>->id);
 
-			return Redirect::to('<?php echo $plural; ?>');
+			return Redirect::to('<?php echo $nested_path.$plural; ?>');
 		}
 
 		else
 		{
-			return Redirect::to('<?php echo $plural; ?>/edit/'.$id)->with_errors($validation->errors);
+			return Redirect::to('<?php echo $nested_path.$plural; ?>/edit/'.$id)->with_errors($validation->errors);
 		}
 	}
 
@@ -199,6 +199,6 @@ class <?php echo $plural_class; ?>_Controller extends Controller {
 			Session::flash('message', 'Deleted <?php echo str_replace('_', ' ', $singular); ?> #'.$<?php echo $singular; ?>->id);
 		}
 
-		return Redirect::to('<?php echo $plural; ?>');
+		return Redirect::to('<?php echo $nested_path.$plural; ?>');
 	}
 }

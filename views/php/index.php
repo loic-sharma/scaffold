@@ -36,9 +36,9 @@
 <?php endforeach; ?>
 <?php endforeach; ?>
 					<td>
-						<a href="<?php echo '<?php'; ?> echo URL::to('<?php echo $plural; ?>/view/'.$<?php echo $singular; ?>->id); ?>">View</a>
-						<a href="<?php echo '<?php'; ?> echo URL::to('<?php echo $plural; ?>/edit/'.$<?php echo $singular; ?>->id); ?>">Edit</a>
-						<a href="<?php echo '<?php'; ?> echo URL::to('<?php echo $plural; ?>/delete/'.$<?php echo $singular; ?>->id); ?>" onclick="return confirm('Are you sure?')">Delete</a>
+						<a href="<?php echo '<?php'; ?> echo URL::to('<?php echo $nested_path.$plural; ?>/view/'.$<?php echo $singular; ?>->id); ?>">View</a>
+						<a href="<?php echo '<?php'; ?> echo URL::to('<?php echo $nested_path.$plural; ?>/edit/'.$<?php echo $singular; ?>->id); ?>">Edit</a>
+						<a href="<?php echo '<?php'; ?> echo URL::to('<?php echo $nested_path.$plural; ?>/delete/'.$<?php echo $singular; ?>->id); ?>" onclick="return confirm('Are you sure?')">Delete</a>
 					</td>
 				</tr>
 			<?php echo '<?php endforeach; ?>'.PHP_EOL; ?>
@@ -46,4 +46,4 @@
 	</table>
 <?php echo '<?php endif; ?>'.PHP_EOL; ?>
 
-<p><a class="btn success" href="<?php echo '<?php'; ?> echo URL::to('<?php echo $plural; ?>/create'); ?>">Create new <?php echo str_replace('_', ' ', $singular_class); ?></a></p>
+<p><a class="btn success" href="<?php echo '<?php'; ?> echo URL::to('<?php echo $nested_path.$plural; ?>/create'); ?>">Create new <?php echo str_replace('_', ' ', $singular_class); ?></a></p>

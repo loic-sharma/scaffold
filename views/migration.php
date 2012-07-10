@@ -9,7 +9,7 @@ class Create_<?php echo $plural_class; ?>_Table {
 	 */
 	public function up()
 	{	
-		Schema::create('<?php echo $plural; ?>', function($table)
+		Schema::create('<?php echo $nested_prefix.$plural; ?>', function($table)
 		{
 			$table->increments('id');
 
@@ -30,7 +30,7 @@ class Create_<?php echo $plural_class; ?>_Table {
 	 */
 	public function down()
 	{
-		Schema::drop('<?php echo $plural; ?>');
+		Schema::drop('<?php echo $nested_prefix.$plural; ?>');
 	}
 
 }

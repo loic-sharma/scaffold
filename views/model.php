@@ -7,7 +7,7 @@ class <?php echo $singular_class; ?> extends Eloquent {
 	 *
 	 * @var string
 	 */
-	public static $table = '<?php echo $plural; ?>';
+	public static $table = '<?php echo $nested_prefix.$plural; ?>';
 
 	/**
 	 * Indicates if the model has update and creation timestamps.

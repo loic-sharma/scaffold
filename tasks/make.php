@@ -73,13 +73,36 @@ class Scaffold_Make_Task {
 		{
 			// Let's prepare all of the default data to prevent any errors
 			// in the generated files.
-			$this->data['timestamps'] = false;
-
 			$this->data['singular'] = array_shift($arguments);
+
+			// If there is a period in the scaffold's name the scaffold
+			// must be nested. Let's take care of that now.
+			$this->data['nested_pieces'] = array();
+			$this->data['nested_prefix'] = '';
+			$this->data['nested_path']   = '';
+			$this->data['nested_view']   = '';
+
+			if(strpos($this->data['singular'], '.') !== false)
+			{
+				$this->data['nested_pieces'] = explode('.', $this->data['singular']);
+
+				// The last piece is actually the scaffold's name, so let's
+				// remove that.
+				$this->data['singular'] = array_pop($this->data['nested_pieces']);
+
+				$this->data['nested_prefix'] = implode('_', $this->data['nested_pieces']).'_';
+				$this->data['nested_path']   = implode('/', $this->data['nested_pieces']).'/';
+				$this->data['nested_view']   = implode('.', $this->data['nested_pieces']).'.';
+			}
+
 			$this->data['plural'] = Str::plural($this->data['singular']);
 
-			$this->data['singular_class'] = Str::classify($this->data['singular']);
-			$this->data['plural_class'] = Str::classify($this->data['plural']);
+			// The classes must be prefixed if they are nested.
+			$this->data['singular_class'] = $this->data['nested_prefix'].$this->data['singular'];
+			$this->data['singular_class'] = Str::classify($this->data['singular_class']);
+
+			$this->data['plural_class'] = $this->data['nested_prefix'].$this->data['plural'];
+			$this->data['plural_class'] = Str::classify($this->data['plural_class']);
 
 			foreach($this->relationships as $relationship)
 			{
@@ -88,10 +111,11 @@ class Scaffold_Make_Task {
 
 			$this->data['has_relationships'] = false;
 
-			$this->data['fields'] = array();
-
-
 			// Build an array of the fields.
+			$this->data['timestamps'] = false;
+			$this->data['fields'] = array();
+			$this->data['url']    = array();
+
 			foreach($arguments as $argument)
 			{
 				$this->extract_argument_data($argument);
@@ -143,7 +167,28 @@ class Scaffold_Make_Task {
 
 					// The second piece contains all of the models that are
 					// part of this relationship, separated by a comma.
-					$this->data['relationships'][$relationship] = explode(',', $pieces[1]);
+					$relationships = explode(',', $pieces[1]);
+
+					foreach($relationships as $key => $value)
+					{
+						$url = $value;
+
+						// Let's handle nested relationships now.
+						if(strpos($value, '.') !== false)
+						{
+							$url   = str_replace('.', '/', $value);
+							$value = str_replace('.', '_', $value);
+
+							$relationships[$key] = $value;
+						}
+
+						// The URL should always be plural.
+						$url = Str::plural($url);
+
+						$this->data['url'][$relationships[$key]] = $url;
+					}
+
+					$this->data['relationships'][$relationship] = $relationships;
 				}
 
 				// If the argument is not defining a new relationship, it must
@@ -154,11 +199,11 @@ class Scaffold_Make_Task {
 					$field = $pieces[0];
 
 					// The second piece is the field's type.
-					$this->data['fields'][$field] = $pieces[1];
+					$this->data['fields'][$field] = strtolower($pieces[1]);
 					$this->data['nullable'][$field] = in_array('nullable', $pieces);
 
 					// Don't set a size unless one was given.
-					if( isset($pieces[2]) and is_numeric($pieces[2]))
+					if(isset($pieces[2]) and is_numeric($pieces[2]))
 					{
 						$this->data['size'][$field] = $pieces[2];
 					}
@@ -264,7 +309,8 @@ class Scaffold_Make_Task {
 		// when we try to write the migration file.
 		if ( ! is_dir($path)) mkdir($path);
 
-		$file = $path.$prefix.'_create_'.$this->data['plural'].'_table'.EXT;
+		$file  = $path.$prefix.'_create_'.$this->data['nested_prefix'];
+		$file .= $this->data['plural'].'_table'.EXT;
 
 		// Generate the migration.
 		$migration = View::make('scaffold::migration', $this->data)->render();
@@ -288,16 +334,17 @@ class Scaffold_Make_Task {
 		// likes long table names, let's make sure that this will still work.
 		$path = path('app').'models';
 
-		if(strpos($this->data['singular'], '_'))
+		// We use the class name as only that is prefixed if the scaffold is nested.
+		if(strpos($this->data['singular_class'], '_'))
 		{
 			// Get all of the directories the model needs to be nested in, and
 			// plop them to the end of the path.
-			$pieces = explode('_', $this->data['singular']);
+			$pieces = explode('_', $this->data['singular_class']);
 			$count  = count($pieces);
 
 			for($i = 0; $i < $count; $i++)
 			{
-				$path .= DS.$pieces[$i];
+				$path .= DS.strtolower($pieces[$i]);
 
 				// All of the pieces except for the very last one are directories
 				// which may not already exist. To prevent any issues from occuring,
@@ -332,7 +379,11 @@ class Scaffold_Make_Task {
 	{
 		$controller = View::make('scaffold::controller', $this->data)->render();
 
-		$file = path('app').'controllers'.DS.$this->data['plural'].EXT;
+		$path = path('app').'controllers'.DS.$this->data['nested_path'];
+
+		if( ! is_dir($path)) mkdir($path);
+
+		$file = $path.$this->data['plural'].EXT;
 
 		File::put($file, $controller);
 
@@ -347,45 +398,70 @@ class Scaffold_Make_Task {
 	 */
 	public function create_view($view)
 	{
-		$content = View::make('scaffold::'.$this->parser.'.'.$view, $this->data)->render();
-
-		// The layout view is special. Unlike all the other views, this one is
-		// placed in the layout directory.
-		if($view == 'layout')
+		try
 		{
-			$path = path('app').'views'.DS.'layouts'.DS;
+			$content = View::make('scaffold::'.$this->parser.'.'.$view, $this->data)->render();
 
-			// The name of the layout has to be changed to 'scaffold' to ensure
-			// there will not be any conflicts.
-			$view = 'scaffold';
+			// The layout view is special. Unlike all the other views, this one is
+			// placed in the layout directory.
+			if($view == 'layout')
+			{
+				$path = path('app').'views'.DS.'layouts'.DS;
+
+				// The name of the layout has to be changed to 'scaffold' to ensure
+				// there will not be any conflicts.
+				$view = 'scaffold';
+			}
+
+			// All the other views are placed in a directory named after the
+			// table.
+			else
+			{
+				$path = path('app').'views'.DS;
+
+				if( ! empty($this->data['nested_path']))
+				{
+					foreach($this->data['nested_pieces'] as $piece)
+					{
+						$path .= $piece.DS;
+
+						// If the view directory for the nested path does not
+						// exist, it will need to be created.
+						if( ! is_dir($path)) mkdir($path);
+					}
+				}
+
+				$path .= $this->data['plural'].DS;
+			}
+
+			// Create the final directory it it doesn't already exist.
+			if ( ! is_dir($path)) mkdir($path);
+
+			if($this->parser == 'blade')
+			{
+				$extension = BLADE_EXT;
+			}
+
+			else
+			{
+				$extension = EXT;
+			}
+
+			$file = $path.$view.$extension;
+
+			File::put($file, $content);
+
+			$this->log('Created view: '.$file);
 		}
 
-		// All the other views are placed in a directory named after the
-		// table.
-		else
+		// If an exception is thrown, the parser set in the config file does
+		// not exist.
+		catch(Exception $e)
 		{
-			$path = path('app').'views'.DS.$this->data['plural'].DS;
+			$this->log($e->getMessage());
+
+			exit;
 		}
-
-		// If the view directory for this table does not exist, it will
-		// need to be created before any files are created.
-		if ( ! is_dir($path)) mkdir($path);
-
-		if($this->parser == 'blade')
-		{
-			$extension = BLADE_EXT;
-		}
-
-		else
-		{
-			$extension = EXT;
-		}
-
-		$file = $path.$view.$extension;
-
-		File::put($file, $content);
-
-		$this->log('Created view: '.$file);
 	}
 
 	/**
@@ -396,6 +472,9 @@ class Scaffold_Make_Task {
 	 */
 	public function log($message)
 	{
-		echo '  '.str_replace(path('base'), '', $message).PHP_EOL;
+		// Let's prettify the message
+		$message = str_replace(array(path('base'), '/'), array('', DS), $message);
+
+		echo '  '.$message.PHP_EOL;
 	}
 }

@@ -6,7 +6,7 @@
 		</li>
 <?php endif; ?>
 		<li>
-			<a href="{{URL::to('<?php echo $plural; ?>')}}"><?php echo str_replace('_', ' ', $plural_class); ?></a> <span class="divider">/</span>
+			<a href="{{URL::to('<?php echo $nested_path.$plural; ?>')}}"><?php echo str_replace('_', ' ', $plural_class); ?></a> <span class="divider">/</span>
 		</li>
 		<li class="active">New <?php echo str_replace('_', ' ', $singular_class); ?></li>
 	</ul>
