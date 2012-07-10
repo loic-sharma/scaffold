@@ -36,13 +36,13 @@ Route::controller(Controller::detect());
 Say you want to make a blog that contains posts that are posted by users. You could manually code all of that, or you
 could just run:
 
-	php artisan scaffold::make comment content:text belongs_to:post,user timestamps
+	php artisan scaffold::make blog.comment content:text belongs_to:blog.post,user timestamps
 	php artisan migrate
 
-	php artisan scaffold::make post title:string content:text belongs_to:user has_many:comment timestamps
+	php artisan scaffold::make blog.post title:string content:text belongs_to:user has_many:blog.comment timestamps
 	php artisan migrate
 
-	php artisan scaffold::make user username:string password:string has_many:post,comment
+	php artisan scaffold::make user username:string password:string has_many:blog.post,blog.comment
 	php artisan migrate
 
 Now isn't that a bit faster?
@@ -51,31 +51,33 @@ Now isn't that a bit faster?
 
 This is the basic structure to generate a new scaffold:
 
-	php artisan scaffold::make <table> <fields> <relationships> <timestamps>
+	php artisan scaffold::make <name> <attributes> <relationships> <timestamps>
 
-`table`: The table's name (always singular).
+`name`: The scaffold's name (always singular). Notice that the scaffold can be
+nested by adding a prefix and a period.
 
-`fields`: The table's fields, separated by a space. The
-different supported types are: _string_, _integer_, _float_, _boolean_, _date_,
-_timestamp_, _text_, and _blob_. The general syntax for a field is:
+`attributes`: The scaffold's attributess, separated by a space. The
+different supported attribute types are: _string_, _integer_, _float_,
+_boolean_, _date_, _timestamp_, _text_, and _blob_. The general syntax for an
+attribute is:
 
 	name:type
 	
 	title:string
 
-Additionally, you can make a field nullable:
+Additionally, you can make a attribute nullable:
 
 	name:type:nullable
 	
 	title:string:nullable
 
-You can even set a maximum field size:
+Or, you can set a character limit for an attribute:
 
 	name:type:length
 
 	title:string:255
 
-Or, you can set a size and make a field nullable:
+You can even set a character limit and make an attribute nullable:
 	
 	name:type:length:nullable
 	
@@ -98,9 +100,12 @@ several similar relationships may be defined at the same time using a comma
 	
 	has_many:post,comment
 
-It is important to note that the different scaffolds listed  within a
+It is important to note that the different scaffolds listed within a
 similar relationship should be ordered by importance. For example, a post
-is more important than a comment.
+is more important than a comment. Additionally, if the scaffold is nested it
+should be prefixed like so:
+
+	has_many:blog.post,blog.comment
 
 `timestamps`: If included, this will make the scaffold automatically timestamp
 when rows are created or updated. If `timestamps` is omitted, the scaffold
