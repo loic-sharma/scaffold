@@ -36,14 +36,14 @@ Route::controller(Controller::detect());
 Say you want to make a blog that contains posts that are posted by users. You could manually code all of that, or you
 could just run:
 
-	php artisan scaffold::make blog.comment content:text belongs_to:blog.post,user timestamps
-	php artisan migrate
+	$ php artisan scaffold::make blog.comment content:text belongs_to:blog.post,user timestamps
+	$ php artisan migrate
 
-	php artisan scaffold::make blog.post title:string content:text belongs_to:user has_many:blog.comment timestamps
-	php artisan migrate
+	$ php artisan scaffold::make blog.post title:string content:text belongs_to:user has_many:blog.comment timestamps
+	$ php artisan migrate
 
-	php artisan scaffold::make user username:string password:string has_many:blog.post,blog.comment
-	php artisan migrate
+	$ php artisan scaffold::make user username:string password:string has_many:blog.post,blog.comment
+	$ php artisan migrate
 
 Now isn't that a bit faster?
 
@@ -110,5 +110,3 @@ should be prefixed like so:
 `timestamps`: If included, this will make the scaffold automatically timestamp
 when rows are created or updated. If `timestamps` is omitted, the scaffold
 will not do this.
-
-**Note**: Don't forget to run your migrations after you create a new scaffold!

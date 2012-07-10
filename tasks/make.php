@@ -5,11 +5,18 @@ use Laravel\CLI\Command;
 class Scaffold_Make_Task {
 
 	/**
-	 * The table's data.
+	 * Is the scaffold generator in testing mode?
 	 *
-	 * @var array
+	 * @var bool
 	 */
-	public $data = array();
+	public $testing;
+
+	/**
+	 * Wether or not to run migrations after a new scaffold is created.
+	 *
+	 * @var bool
+	 */
+	public $migrate;
 
 	/**
 	 * The type of parser the views will use.
@@ -17,6 +24,20 @@ class Scaffold_Make_Task {
 	 * @var string
 	 */
 	public $parser;
+
+	/**
+	 * View extensions.
+	 *
+	 * @var array
+	 */
+	public $extensions;
+
+	/**
+	 * The table's data.
+	 *
+	 * @var array
+	 */
+	public $data = array();
 
 	/**
 	 * The list of different relationships.
@@ -32,13 +53,6 @@ class Scaffold_Make_Task {
 	);
 
 	/**
-	 * Is the scaffold generator in testing mode?
-	 *
-	 * @var bool
-	 */
-	public $testing;
-
-	/**
 	 * Create a new scaffold.
 	 *
 	 * @param  array  $arguments
@@ -46,8 +60,10 @@ class Scaffold_Make_Task {
 	 */
 	public function run($arguments)
 	{
-		$this->parser  = Config::get('scaffold::scaffold.parser');
-		$this->testing = Config::get('scaffold::scaffold.testing');
+		$this->testing    = Config::get('scaffold::scaffold.testing');
+		$this->migrate    = Config::get('scaffold::scaffold.migrate');
+		$this->parser     = Config::get('scaffold::scaffold.parser');
+		$this->extensions = Config::get('scaffold::scaffold.extensions');
 
 		if($this->testing)
 		{
@@ -132,6 +148,11 @@ class Scaffold_Make_Task {
 			$this->create_view('view');
 			$this->create_view('create');
 			$this->create_view('edit');
+
+			if($this->migrate)
+			{
+				$this->run_migrations();
+			}
 		}
 	}
 
@@ -437,14 +458,14 @@ class Scaffold_Make_Task {
 			// Create the final directory it it doesn't already exist.
 			if ( ! is_dir($path)) mkdir($path);
 
-			if($this->parser == 'blade')
+			if(isset($this->extensions[$this->parser]))
 			{
-				$extension = BLADE_EXT;
+				$extension = $this->extensions[$this->parser];
 			}
 
 			else
 			{
-				$extension = EXT;
+				$extension = $this->extensions['defaut'];
 			}
 
 			$file = $path.$view.$extension;
@@ -462,6 +483,20 @@ class Scaffold_Make_Task {
 
 			exit;
 		}
+	}
+
+	/**
+	 * Run the new migrations.
+	 *
+	 * @return void
+	 */
+	public function run_migrations()
+	{
+		ob_start();
+
+		Laravel\CLI\Command::run(array('migrate'));
+
+		$this->log(ob_get_clean());
 	}
 
 	/**
