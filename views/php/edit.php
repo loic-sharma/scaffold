@@ -32,6 +32,7 @@
 
 		<div class="actions">
 			<?php echo '<?php'; ?> echo Form::submit('Save', array('class' => 'btn primary')); ?>
+			<a href="<?php echo '<?php'; ?> echo URL::to(<?php echo "Request::referrer()" ?>); ?>"><?php echo "Cancel"; ?></a>
 		</div>
 	</fieldset>
 <?php echo '<?php'; ?> echo Form::close(); ?>
