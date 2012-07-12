@@ -91,6 +91,7 @@ class <?php echo $plural_class; ?>_Controller extends Controller {
 
 		else
 		{
+			Input::flash();
 			return Redirect::to('<?php echo $nested_path.$plural; ?>/create')->with_errors($validation->errors);
 		}
 	}
@@ -178,6 +179,7 @@ class <?php echo $plural_class; ?>_Controller extends Controller {
 
 		else
 		{
+			Input::flash();
 			return Redirect::to('<?php echo $nested_path.$plural; ?>/edit/'.$id)->with_errors($validation->errors);
 		}
 	}

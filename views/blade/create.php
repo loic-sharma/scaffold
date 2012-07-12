@@ -36,6 +36,7 @@
 
 		<div class="actions">
 			{{Form::submit('Save', array('class' => 'btn primary'))}}
+			<a href="{{ URL::to(Request::referrer()) }}">Cancel</a>
 		</div>
 	</fieldset>
 {{Form::close()}}
