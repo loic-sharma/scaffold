@@ -465,7 +465,7 @@ class Scaffold_Make_Task {
 
 			else
 			{
-				$extension = $this->extensions['defaut'];
+				$extension = $this->extensions['default'];
 			}
 
 			$file = $path.$view.$extension;
