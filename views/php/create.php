@@ -12,7 +12,7 @@
 	</ul>
 </div>
 
-<?php echo '<?php'; ?> echo Form::open(null, 'post', array('class' => 'form-stacked')); ?>
+<?php echo '<?php'; ?> echo Form::open(null, 'post', array('class' => 'form-stacked span16')); ?>
 	<fieldset>
 <?php foreach($fields as $field => $type): ?>
 		<div class="clearfix">
