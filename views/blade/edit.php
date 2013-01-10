@@ -12,7 +12,7 @@
 	</ul>
 </div>
 
-{{Form::open(null, 'post', array('class' => 'form-stacked'))}}
+{{Form::open(null, 'post', array('class' => 'form-stacked span16'))}}
 	<fieldset>
 <?php foreach($fields as $field => $type): ?>
 		<div class="clearfix">

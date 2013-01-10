@@ -1,6 +1,6 @@
 <?php echo '<?php'.PHP_EOL; ?>
 
-class <?php echo $plural_class; ?>_Controller extends Controller {
+class <?php echo $plural_class; ?>_Controller extends Base_Controller {
 
 	/**
 	 * The layout being used by the controller.
