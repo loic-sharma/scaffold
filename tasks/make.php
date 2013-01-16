@@ -120,6 +120,9 @@ class Scaffold_Make_Task {
 			$this->data['plural_class'] = $this->data['nested_prefix'].$this->data['plural'];
 			$this->data['plural_class'] = Str::classify($this->data['plural_class']);
 
+			// Let's also set the table name for this scaffold.
+			$this->data['table_name'] = $this->data['nested_prefix'].$this->data['plural'];
+
 			foreach($this->relationships as $relationship)
 			{
 				$this->data['relationships'][$relationship] = array();
@@ -138,7 +141,7 @@ class Scaffold_Make_Task {
 			}
 
 			$this->prepare_relationships();
-			$this->create_migration();
+			$this->create_migrations();
 
 			$this->create_controller();
 			$this->create_model();
@@ -265,7 +268,6 @@ class Scaffold_Make_Task {
 
 		if($this->data['has_relationships'])
 		{
-			$belongs_to_relationships = array('belongs_to', 'has_many_and_belongs_to');
 			$plural_relationships = array_keys($this->data['plural_relationships']);
 
 			foreach($this->data['relationships'] as $relationship => $models)
@@ -285,7 +287,7 @@ class Scaffold_Make_Task {
 					}
 
 					// Let's add the field to link belongs_to relationships.
-					if(in_array($relationship, $belongs_to_relationships))
+					if($relationship == 'belongs_to')
 					{
 						$field = array($model.'_id' => 'integer');
 
@@ -311,11 +313,11 @@ class Scaffold_Make_Task {
 	}
 
 	/**
-	 * Create a new migration.
+	 * Create the scaffold's migrations.
 	 *
 	 * @return void
 	 */
-	public function create_migration()
+	public function create_migrations()
 	{
 		// The migration path is prefixed with the date timestamp, which
 		// is a better way of ordering migrations than a simple integer
@@ -330,15 +332,58 @@ class Scaffold_Make_Task {
 		// when we try to write the migration file.
 		if ( ! is_dir($path)) mkdir($path);
 
-		$file  = $path.$prefix.'_create_'.$this->data['nested_prefix'];
-		$file .= $this->data['plural'].'_table'.EXT;
+		// Let's start adding in the migrations that will need to be
+		// created. Usually, we'll just need the scaffold's table migration. 
+		$migrations = array(
+			array(
+				'name' => 'create_'.$this->data['nested_prefix'].$this->data['plural'].'_table',
+				'data' => $this->data,
+			)
+		);
 
-		// Generate the migration.
-		$migration = View::make('scaffold::migration', $this->data)->render();
+		// However, if there are any many-to-many relationships we will
+		// need to create pivot tables. Let's add those in.
+		foreach($this->data['relationships']['has_many_and_belongs_to'] as $relationship)
+		{
+			if(strpos($relationship, '.') !== false)
+			{
+				$relationship = str_replace('.', '_', $relationship);
+			}
 
-		File::put($file, $migration);
+			// The pivot requires the two tables to be sorted
+			// alphabetically.
+			$tables = array($this->data['nested_prefix'].$this->data['singular'], $relationship);
 
-		$this->log('created migration: create_'.$this->data['plural'].'_table');
+			sort($tables);
+
+			$pivot = implode('_', $tables);
+
+			$migrations[] = array(
+				'name' => 'create_'.$pivot.'_table',
+				'data' => array(
+					'nested_prefix' => $this->data['nested_prefix'],
+					'plural'        => $pivot,
+					'plural_class'  => Str::classify($pivot),
+					'table_name'    => $pivot,
+					'fields'        => array(
+						$this->data['nested_prefix'].$this->data['singular'].'_id' => 'integer',
+						$relationship.'_id' => 'integer',
+					),
+					'timestamps'    => true,
+				),
+			);
+		}
+
+		// Let's now loop through each migration and create them.
+		foreach($migrations as $migration)
+		{
+			$file = $path.$prefix.'_'.$migration['name'].EXT;
+
+			// Generate the migration.
+			File::put($file, View::make('scaffold::migration', $migration['data'])->render());
+
+			$this->log('Created migration: '.$migration['name']);
+		}
 	}
 
 	/**
