@@ -24,7 +24,7 @@
 </p>
 <?php endforeach; ?>
 
-<p><a href="{{URL::to('<?php echo $nested_path.$plural; ?>/edit/'.$<?php echo $singular; ?>->id)}}">Edit</a> | <a href="{{URL::to('<?php echo $nested_path.$plural; ?>/delete/'.$<?php echo $singular; ?>->id)}}" onclick="return confirm('Are you sure?')">Delete</a></p>
+<p><a href="{{URL::to('<?php echo $nested_path.$plural; ?>/edit/'.$<?php echo $singular; ?>->id)}}" class="btn">Edit</a> <a href="{{URL::to('<?php echo $nested_path.$plural; ?>/delete/'.$<?php echo $singular; ?>->id)}}" class="btn danger" onclick="return confirm('Are you sure?')">Delete</a></p>
 <?php foreach($plural_relationships as $relationship => $models): ?>
 <?php foreach($models as $model): ?>
 <h2><?php echo ucwords(str_replace('_', ' ', Str::plural($model))); ?></h2>

@@ -36,9 +36,9 @@
 <?php endforeach; ?>
 <?php endforeach; ?>
 					<td>
-						<a href="{{URL::to('<?php echo $nested_path.$plural; ?>/view/'.$<?php echo $singular; ?>->id)}}">View</a>
-						<a href="{{URL::to('<?php echo $nested_path.$plural; ?>/edit/'.$<?php echo $singular; ?>->id)}}">Edit</a>
-						<a href="{{URL::to('<?php echo $nested_path.$plural; ?>/delete/'.$<?php echo $singular; ?>->id)}}" onclick="return confirm('Are you sure?')">Delete</a>
+						<a href="{{URL::to('<?php echo $nested_path.$plural; ?>/view/'.$<?php echo $singular; ?>->id)}}" class="btn">View</a>
+						<a href="{{URL::to('<?php echo $nested_path.$plural; ?>/edit/'.$<?php echo $singular; ?>->id)}}" class="btn">Edit</a>
+						<a href="{{URL::to('<?php echo $nested_path.$plural; ?>/delete/'.$<?php echo $singular; ?>->id)}}" class="btn danger" onclick="return confirm('Are you sure?')">Delete</a>
 					</td>
 				</tr>
 			@endforeach
