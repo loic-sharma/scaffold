@@ -443,6 +443,9 @@ class Scaffold_Make_Task {
 	 */
 	public function create_controller()
 	{
+		// Let's find out if the app has a base controller.
+		$this->detect_controller();
+
 		$controller = View::make('scaffold::controller', $this->data)->render();
 
 		$path = path('app').'controllers'.DS.$this->data['nested_path'];
@@ -454,6 +457,22 @@ class Scaffold_Make_Task {
 		File::put($file, $controller);
 
 		$this->log('Created controller: '.$file);
+	}
+
+	/**
+	 * Detect the controller the scaffold should inherit.
+	 *
+	 * @return void
+	 */
+	public function detect_controller()
+	{
+		// We'll just use the Controller class by default.
+		$this->data['controller'] = 'Controller';
+
+		if(file_exists(path('app').'controllers'.DS.'base'.EXT))
+		{
+			$this->data['controller'] = 'Base_Controller';
+		}
 	}
 
 	/**
