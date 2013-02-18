@@ -450,7 +450,7 @@ class Scaffold_Make_Task {
 
 		$path = path('app').'controllers'.DS.$this->data['nested_path'];
 
-		if( ! is_dir($path)) mkdir($path);
+		if( ! is_dir($path)) mkdir($path, 0777, true);
 
 		$file = $path.$this->data['plural'].EXT;
 
